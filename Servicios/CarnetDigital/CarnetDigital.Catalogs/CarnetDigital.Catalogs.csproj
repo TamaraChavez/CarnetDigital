@@ -1,0 +1,21 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="8.0.6" />
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\CarnetDigital.Abstract\CarnetDigital.Abstract.csproj" />
+    <ProjectReference Include="..\CarnetDigital.BusinessLogic\CarnetDigital.BusinessLogic.csproj" />
+    <ProjectReference Include="..\CarnetDigital.DataAccess\CarnetDigital.DataAccess.csproj" />
+    <ProjectReference Include="..\CarnetDigital.Models\CarnetDigital.Models.csproj" />
+  </ItemGroup>
+
+</Project>

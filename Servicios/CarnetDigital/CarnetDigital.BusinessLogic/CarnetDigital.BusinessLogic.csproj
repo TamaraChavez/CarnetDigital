@@ -1,0 +1,15 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\CarnetDigital.Abstract\CarnetDigital.Abstract.csproj" />
+    <ProjectReference Include="..\CarnetDigital.DataAccess\CarnetDigital.DataAccess.csproj" />
+    <ProjectReference Include="..\CarnetDigital.Models\CarnetDigital.Models.csproj" />
+  </ItemGroup>
+
+</Project>

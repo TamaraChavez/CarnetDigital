@@ -1,0 +1,6 @@
+@CarnetDigital.Pictures_HostAddress = http://localhost:5188
+
+GET {{CarnetDigital.Pictures_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

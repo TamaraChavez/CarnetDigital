@@ -26,8 +26,10 @@ namespace CarnetDigital.Models
         public string Contrasena { get; set; } = null!;
 
 
-        [Required(ErrorMessage = "El tipo de identificacion es requerido")]
-        [Range(1, 3, ErrorMessage = "El tipo de identificacion debe ser 1, 2 o 3")] // No se cuantos tipos de identificacion hay
+        [Required(ErrorMessage = "El estado es requerido")]
+        [Range(1, 3, ErrorMessage = "El tipo de estado debe ser 1, 2 o 3")] // No se cuantos tipos de estado hay
+        public string Estado { get; set; } = null!;
+
 
         public string? Telefono { get; set; } = null!;//?OPCIONAL
 

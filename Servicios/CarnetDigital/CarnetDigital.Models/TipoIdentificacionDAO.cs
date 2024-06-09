@@ -7,10 +7,10 @@ using System.Threading.Tasks;
 
 namespace CarnetDigital.Models
 {
-    public class UsuarioDAO 
+    public class TipoIdentificacionDAO 
     {
         [Required(AllowEmptyStrings = false, ErrorMessage = "El nombre del tipo de identificacion es requerido")]
-        [Range(1, 3, ErrorMessage = "El tipo de identificacion debe ser Cédula de Identida, Pasaporte, Visa o Licencia de Conducir")]
+        [Range(1, 3, ErrorMessage = "El tipo de identificacion debe ser Cédula de Identidad, Pasaporte, Visa o Licencia de Conducir")]
         public byte TipoIdentificacion { get; set; }
 
     }

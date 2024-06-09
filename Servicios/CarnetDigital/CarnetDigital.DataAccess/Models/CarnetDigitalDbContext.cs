@@ -32,8 +32,8 @@ public partial class CarnetDigitalDbContext : DbContext
     public virtual DbSet<Usuario> Usuario { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        => optionsBuilder.UseSqlServer("Name=DefaultConnection");
-
+        //=> optionsBuilder.UseSqlServer("Name=DefaultConnection");
+        => optionsBuilder.UseSqlServer("Server=DESKTOP-R9E1L2M\\SQLINSTANCE1;Database=CarnetDigitalDB;User Id=sa;Password=*Tami123;Encrypt=False");
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<Area>(entity =>

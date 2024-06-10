@@ -2,6 +2,7 @@ using CarnetDigital.DataAccess.Models;
 using Microsoft.EntityFrameworkCore;
 using CarnetDigital.Users;
 
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -28,6 +29,8 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 
 app.MapUsuarioEndpoints();
+
+//app.MapUsuarioEndpoints();
 
 //var summaries = new[]
 //{

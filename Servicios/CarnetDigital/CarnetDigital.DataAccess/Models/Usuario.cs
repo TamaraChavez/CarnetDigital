@@ -15,7 +15,7 @@ public partial class Usuario
 
     public string Contrasena { get; set; } = null!;
 
-    public byte Estado { get; set; }
+    //public byte Estado { get; set; }
 
     public byte TipoUsuarioId { get; set; }
 

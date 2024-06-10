@@ -5,7 +5,7 @@ namespace CarnetDigital.DataAccess.Models;
 
 public partial class TipoIdentificacion
 {
-    public byte Email { get; set; }
+    public byte TipoIdentificacionID { get; set; }
 
     public string Nombre { get; set; } = null!;
 

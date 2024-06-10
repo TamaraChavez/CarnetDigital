@@ -19,7 +19,7 @@ public partial class CarnetDigitalContext : DbContext
 
     public virtual DbSet<Carrera> Carrera { get; set; }
 
-    public virtual DbSet<Estados> Estados { get; set; }
+    //public virtual DbSet<Estados> Estados { get; set; }
 
     public virtual DbSet<RefreshToken> RefreshToken { get; set; }
 
@@ -68,15 +68,15 @@ public partial class CarnetDigitalContext : DbContext
                 .IsUnicode(false);
         });
 
-        modelBuilder.Entity<Estados>(entity =>
-        {
-            entity.HasKey(e => e.EstadoId);
+        //modelBuilder.Entity<Estados>(entity =>
+        //{
+        //    entity.HasKey(e => e.EstadoId);
 
-            entity.Property(e => e.EstadoId).HasColumnName("EstadoID");
-            entity.Property(e => e.Descripcion)
-                .HasMaxLength(20)
-                .IsUnicode(false);
-        });
+        //    entity.Property(e => e.EstadoId).HasColumnName("EstadoID");
+        //    entity.Property(e => e.Descripcion)
+        //        .HasMaxLength(20)
+        //        .IsUnicode(false);
+        //});
 
         modelBuilder.Entity<RefreshToken>(entity =>
         {
@@ -111,9 +111,9 @@ public partial class CarnetDigitalContext : DbContext
 
         modelBuilder.Entity<TipoIdentificacion>(entity =>
         {
-            entity.HasKey(e => e.Email).HasName("PK__TiposIde__C774CA54DDC07D3B");
+            entity.HasKey(e => e.TipoIdentificacionID).HasName("PK__TiposIde__C774CA54DDC07D3B");
 
-            entity.Property(e => e.Email).ValueGeneratedOnAdd();
+            entity.Property(e => e.TipoIdentificacionID).ValueGeneratedOnAdd();
             entity.Property(e => e.Nombre)
                 .HasMaxLength(50)
                 .IsUnicode(false);
@@ -151,10 +151,10 @@ public partial class CarnetDigitalContext : DbContext
             entity.Property(e => e.TipoIdentificacionId).HasColumnName("TipoIdentificacionID");
             entity.Property(e => e.TipoUsuarioId).HasColumnName("TipoUsuarioID");
 
-            entity.HasOne(d => d.EstadoNavigation).WithMany(p => p.Usuario)
-                .HasForeignKey(d => d.Estado)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_Usuarios_Estados");
+            //entity.HasOne(d => d.EstadoNavigation).WithMany(p => p.Usuario)
+            //    .HasForeignKey(d => d.Estado)
+            //    .OnDelete(DeleteBehavior.ClientSetNull)
+            //    .HasConstraintName("FK_Usuarios_Estados");
 
             entity.HasOne(d => d.TipoIdentificacion).WithMany(p => p.Usuario)
                 .HasForeignKey(d => d.TipoIdentificacionId)

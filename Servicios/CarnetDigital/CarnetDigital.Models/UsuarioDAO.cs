@@ -35,7 +35,7 @@ namespace CarnetDigital.Models
 
         [Required(ErrorMessage = "El tipo de identificación es requerido")]
         [Range(1, 3, ErrorMessage = "El tipo de identificación debe ser 1, 2 o 3")] // Ajusta el rango según sea necesario
-        public byte TipoIdentificacion { get; set; }
+        public byte TipoIdentificacion { get; set; } 
 
         [Required(AllowEmptyStrings = false, ErrorMessage = "La identificación es requerida")]
         public string Identificacion { get; set; } = null!;
@@ -57,9 +57,9 @@ namespace CarnetDigital.Models
 
         public string? Telefono { get; set; } = null!;//?OPCIONAL
 
-        public List<string>? Carreras { get; set; } = new List<string>();
+        public List<string>? Carrera { get; set; } = new List<string>();
 
-        public List<string>? Areas { get; set; } = new List<string>();
+        public List<string>? Area { get; set; } = new List<string>();
 
 
         public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
@@ -78,13 +78,13 @@ namespace CarnetDigital.Models
             }
 
             // Validación de carreras y áreas asociadas
-            if (TipoUsuario == TipoUsuario.Estudiante && (Carreras == null || !Carreras.Any()))
+            if (TipoUsuario == TipoUsuario.Estudiante && (Carrera == null || !Carrera.Any()))
             {
-                results.Add(new ValidationResult("Los estudiantes deben tener al menos una carrera asociada.", new[] { nameof(Carreras) }));
+                results.Add(new ValidationResult("Los estudiantes deben tener al menos una carrera asociada.", new[] { nameof(Carrera) }));
             }
-            if (TipoUsuario == TipoUsuario.Funcionario && (Areas == null || !Areas.Any()))
+            if (TipoUsuario == TipoUsuario.Funcionario && (Area == null || !Area.Any()))
             {
-                results.Add(new ValidationResult("Los funcionarios deben tener al menos un área asociada.", new[] { nameof(Areas) }));
+                results.Add(new ValidationResult("Los funcionarios deben tener al menos un área asociada.", new[] { nameof(Area) }));
             }
 
             return results;

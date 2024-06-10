@@ -2,40 +2,54 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace CarnetDigital.Models
 {
     public enum TipoUsuario
-     {
-            Funcionario = 1,
-            Estudiante = 2,
-            Administrador = 3 
-      }
-
-   public class UsuarioDAO
     {
+        Funcionario = 1,
+        Estudiante = 2,
+        Administrador = 3
+    }
 
-        [Required(AllowEmptyStrings = false, ErrorMessage = "El correo electronico de la persona es requerido")]//NO PERMITE QUE EL STRING VENGA VACIO
+    // Atributo personalizado para validar que un string no esté vacío ni contenga solo espacios en blanco
+    public class NoEmptyOrWhiteSpaceAttribute : ValidationAttribute
+    {
+        protected override ValidationResult? IsValid(object? value, ValidationContext validationContext)
+        {
+            if (value is string stringValue)
+            {
+                if (string.IsNullOrWhiteSpace(stringValue))
+                {
+                    return new ValidationResult("El campo no puede estar vacío ni contener solo espacios en blanco.");
+                }
+            }
+            return ValidationResult.Success;
+        }
+    }
+
+    public class UsuarioDAO : IValidatableObject
+    {
+        [Required(AllowEmptyStrings = false, ErrorMessage = "El correo electrónico de la persona es requerido")]
         public string Email { get; set; } = null!;
 
-        [Required(ErrorMessage = "El tipo de identificacion es requerido")]
-        [Range(1, 3, ErrorMessage = "El tipo de identificacion debe ser 1, 2 o 3")] // No se cuantos tipos de identificacion hay
-        public byte TipoIdentificacion { get; set; }//
+        [Required(ErrorMessage = "El tipo de identificación es requerido")]
+        [Range(1, 3, ErrorMessage = "El tipo de identificación debe ser 1, 2 o 3")] // Ajusta el rango según sea necesario
+        public byte TipoIdentificacion { get; set; }
 
-        [Required(AllowEmptyStrings = false, ErrorMessage = "La identificacion es requerida")]
+        [Required(AllowEmptyStrings = false, ErrorMessage = "La identificación es requerida")]
         public string Identificacion { get; set; } = null!;
 
         [Required(AllowEmptyStrings = false, ErrorMessage = "El nombre completo es requerido")]
+        [NoEmptyOrWhiteSpace(ErrorMessage = "El nombre completo no puede estar vacío ni contener solo espacios en blanco.")]
         public string NombreCompleto { get; set; } = null!;
 
         [Required(AllowEmptyStrings = false, ErrorMessage = "La contraseña es requerida")]
         public string Contrasena { get; set; } = null!;
 
-        [Required(ErrorMessage = "El estado es requerido")]
-        [Range(1, 3, ErrorMessage = "El tipo de estado debe ser 1, 2 o 3")] // No se cuantos tipos de estado hay
-        public string Estado { get; set; } = null!;
+        //[Required(ErrorMessage = "El estado es requerido")]
+        //[Range(1, 3, ErrorMessage = "El tipo de estado debe ser 1, 2 o 3")] // No se cuantos tipos de estado hay
+        //public string Estado { get; set; } = null!;
 
         [Required(ErrorMessage = "El tipo de usuario es requerido")]
         [EnumDataType(typeof(TipoUsuario), ErrorMessage = "El tipo de usuario debe ser un valor válido")]
@@ -46,6 +60,7 @@ namespace CarnetDigital.Models
         public List<string>? Carreras { get; set; } = new List<string>();
 
         public List<string>? Areas { get; set; } = new List<string>();
+
 
         public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
         {

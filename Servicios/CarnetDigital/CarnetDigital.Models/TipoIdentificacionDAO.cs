@@ -11,7 +11,10 @@ namespace CarnetDigital.Models
     {
         [Required(AllowEmptyStrings = false, ErrorMessage = "El nombre del tipo de identificacion es requerido")]
         [Range(1, 3, ErrorMessage = "El tipo de identificacion debe ser Cédula de Identidad, Pasaporte, Visa o Licencia de Conducir")]
-        public byte TipoIdentificacion { get; set; }
+        public string Nombre { get; set; } = null!;
 
+        [Required(AllowEmptyStrings = false, ErrorMessage = "El id del tipo de identificacion es requerido")]
+        [Range(1, 3, ErrorMessage = "El tipo de identificacion debe ser un números")]
+        public byte TipoIdentificacionID { get; set; }
     }
 }

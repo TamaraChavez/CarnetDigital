@@ -2,68 +2,128 @@
 using CarnetDigital.DataAccess.Models;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.OpenApi;
-namespace CarnetDigital.Pictures;
+using Microsoft.AspNetCore.Authorization;
+using System.Drawing;
+using System.Drawing.Imaging;
+using System.IO;
+using Microsoft.AspNetCore.Mvc;
 
-public static class FotografiaEndpoints
+namespace CarnetDigital.Pictures
 {
-    public static void MapUsuarioEndpoints (this IEndpointRouteBuilder routes)
+  public static class FotografiaEndpoints
+  {
+    // Este método mapea los endpoints relacionados con las fotografias
+    public static void MapFotografiaEndpoints(this IEndpointRouteBuilder routes)
     {
-        var group = routes.MapGroup("/api/Usuario").WithTags(nameof(Usuario));
+      var group = routes.MapGroup("/api/Usuario").WithTags(nameof(Usuario));
 
-        group.MapGet("/", async (CarnetDigitalDbContext db) =>
+      // Actualizar Foto con validación
+      group.MapPut("/fotografia/{id}", [Authorize] async Task<Results<Ok, NotFound, BadRequest>> (string id, [FromBody] string fotografiaBase64, CarnetDigitalDbContext db) =>
+      {
+        if (string.IsNullOrEmpty(fotografiaBase64))
         {
-            return await db.Usuario.ToListAsync();
-        })
-        .WithName("GetAllUsuarios")
-        .WithOpenApi();
+          return TypedResults.BadRequest();
+        }
 
-        group.MapGet("/{id}", async Task<Results<Ok<Usuario>, NotFound>> (string email, CarnetDigitalDbContext db) =>
+        // Validar el formato y tamaño de la foto
+        if (!TryValidatePhoto(fotografiaBase64, out var validationMessage))
         {
-            return await db.Usuario.AsNoTracking()
-                .FirstOrDefaultAsync(model => model.Email == email)
-                is Usuario model
-                    ? TypedResults.Ok(model)
-                    : TypedResults.NotFound();
-        })
-        .WithName("GetUsuarioById")
-        .WithOpenApi();
+          return TypedResults.BadRequest();
+        }
 
-        group.MapPut("/{id}", async Task<Results<Ok, NotFound>> (string email, Usuario usuario, CarnetDigitalDbContext db) =>
+        var usuario = await db.Usuario.FindAsync(id);
+        if (usuario == null)
         {
-            var affected = await db.Usuario
-                .Where(model => model.Email == email)
-                .ExecuteUpdateAsync(setters => setters
-                    .SetProperty(m => m.Email, usuario.Email)
-                    .SetProperty(m => m.TipoIdentificacionId, usuario.TipoIdentificacionId)
-                    .SetProperty(m => m.Identificacion, usuario.Identificacion)
-                    .SetProperty(m => m.NombreCompleto, usuario.NombreCompleto)
-                    .SetProperty(m => m.Contrasena, usuario.Contrasena)
-                    .SetProperty(m => m.Estado, usuario.Estado)
-                    .SetProperty(m => m.TipoUsuarioId, usuario.TipoUsuarioId)
-                    .SetProperty(m => m.Fotografia, usuario.Fotografia)
-                    );
-            return affected == 1 ? TypedResults.Ok() : TypedResults.NotFound();
-        })
-        .WithName("UpdateUsuario")
-        .WithOpenApi();
+          return TypedResults.NotFound();
+        }
 
-        group.MapPost("/", async (Usuario usuario, CarnetDigitalDbContext db) =>
-        {
-            db.Usuario.Add(usuario);
-            await db.SaveChangesAsync();
-            return TypedResults.Created($"/api/Usuario/{usuario.Email}",usuario);
-        })
-        .WithName("CreateUsuario")
-        .WithOpenApi();
+        usuario.Fotografia = fotografiaBase64;
+        await db.SaveChangesAsync();
 
-        group.MapDelete("/{id}", async Task<Results<Ok, NotFound>> (string email, CarnetDigitalDbContext db) =>
+        return TypedResults.Ok();
+      })
+      .WithName("UpdateFotografia")
+      .WithOpenApi();
+
+      // Eliminar Foto
+      group.MapDelete("/fotografia/{id}", [Authorize] async Task<Results<Ok, NotFound>> (string id, CarnetDigitalDbContext db) =>
+      {
+        var usuario = await db.Usuario.FindAsync(id);
+        if (usuario == null)
         {
-            var affected = await db.Usuario
-                .Where(model => model.Email == email)
-                .ExecuteDeleteAsync();
-            return affected == 1 ? TypedResults.Ok() : TypedResults.NotFound();
-        })
-        .WithName("DeleteUsuario")
-        .WithOpenApi();
+          return TypedResults.NotFound();
+        }
+
+        usuario.Fotografia = null;
+        await db.SaveChangesAsync();
+
+        return TypedResults.Ok();
+      })
+      .WithName("DeleteFotografia")
+      .WithOpenApi();
+
+      // Obtener Foto
+      group.MapGet("/fotografia/{id}", [Authorize] async Task<Results<Ok<string>, NotFound>> (string id, CarnetDigitalDbContext db) =>
+      {
+        var usuario = await db.Usuario.FindAsync(id);
+        if (usuario == null)
+        {
+          return TypedResults.NotFound();
+        }
+
+        return TypedResults.Ok(usuario.Fotografia);
+      })
+      .WithName("GetFotografia")
+      .WithOpenApi();
     }
+
+    // Este método intenta validar la foto recibida
+    private static bool TryValidatePhoto(string base64Image, out string validationMessage)
+    {
+      validationMessage = string.Empty;
+
+      try
+      {
+        // Convertir la cadena Base64 en un array de bytes
+        byte[] imageBytes = Convert.FromBase64String(base64Image);
+
+        // Cargar el array de bytes en un MemoryStream
+        using (var ms = new MemoryStream(imageBytes))
+        {
+          // Cargar la imagen desde el MemoryStream
+          using (var image = Image.FromStream(ms))
+          {
+            // Verificar el formato de la imagen
+            if (image.RawFormat != ImageFormat.Jpeg && image.RawFormat != ImageFormat.Png)
+            {
+              validationMessage = "La imagen debe estar en formato JPEG o PNG.";
+              return false;
+            }
+
+            // Verificar las dimensiones de la imagen (relación de aspecto 4:3)
+            if (image.Width * 3 != image.Height * 4)
+            {
+              validationMessage = "La imagen debe tener una proporción de aspecto 4:3.";
+              return false;
+            }
+
+            // Verificar el tamaño de la imagen (por ejemplo, máximo 2MB)
+            const int maxSizeInBytes = 2 * 1024 * 1024;
+            if (imageBytes.Length > maxSizeInBytes)
+            {
+              validationMessage = "El tamaño de la imagen no debe superar los 2MB.";
+              return false;
+            }
+          }
+        }
+      }
+      catch (Exception)
+      {
+        validationMessage = "La imagen no es válida o está dañada.";
+        return false;
+      }
+
+      return true;
+    }
+  }
 }

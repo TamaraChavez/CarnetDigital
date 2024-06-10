@@ -21,7 +21,7 @@ public partial class CarnetDigitalContext : DbContext
 
     //public virtual DbSet<Estados> Estados { get; set; }
 
-    public virtual DbSet<RefreshToken> RefreshToken { get; set; }
+    //public virtual DbSet<RefreshToken> RefreshToken { get; set; }
 
     public virtual DbSet<TelefonoUsuario> TelefonoUsuario { get; set; }
 
@@ -78,22 +78,22 @@ public partial class CarnetDigitalContext : DbContext
         //        .IsUnicode(false);
         //});
 
-        modelBuilder.Entity<RefreshToken>(entity =>
-        {
-            entity.Property(e => e.RefreshTokenId).HasColumnName("RefreshTokenID");
-            entity.Property(e => e.Email)
-                .HasMaxLength(100)
-                .IsUnicode(false);
-            entity.Property(e => e.ExpirationDate).HasColumnType("datetime");
-            entity.Property(e => e.RefreshTokenValue)
-                .HasMaxLength(500)
-                .IsUnicode(false);
+        //modelBuilder.Entity<RefreshToken>(entity =>
+        //{
+        //    entity.Property(e => e.RefreshTokenId).HasColumnName("RefreshTokenID");
+        //    entity.Property(e => e.Email)
+        //        .HasMaxLength(100)
+        //        .IsUnicode(false);
+        //    entity.Property(e => e.ExpirationDate).HasColumnType("datetime");
+        //    entity.Property(e => e.RefreshTokenValue)
+        //        .HasMaxLength(500)
+        //        .IsUnicode(false);
 
-            entity.HasOne(d => d.EmailNavigation).WithMany(p => p.RefreshToken)
-                .HasForeignKey(d => d.Email)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_RefreshToken_Usuarios");
-        });
+        //    entity.HasOne(d => d.EmailNavigation).WithMany(p => p.RefreshToken)
+        //        .HasForeignKey(d => d.Email)
+        //        .OnDelete(DeleteBehavior.ClientSetNull)
+        //        .HasConstraintName("FK_RefreshToken_Usuarios");
+        //});
 
         modelBuilder.Entity<TelefonoUsuario>(entity =>
         {

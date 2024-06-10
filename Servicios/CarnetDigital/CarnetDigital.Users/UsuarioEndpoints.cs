@@ -11,22 +11,78 @@ namespace CarnetDigital.Users
         {
             var group = routes.MapGroup("/api/Usuario").WithTags(nameof(Usuario));
 
+            //group.MapGet("/", async (CarnetDigitalContext db) =>
+            //{
+            //    return await db.Usuario.ToListAsync();
+            //})
+            //.WithName("GetAllUsuarios")
+            //.WithOpenApi();
+
             group.MapGet("/", async (CarnetDigitalContext db) =>
             {
-                return await db.Usuario.Include(u => u.Area).Include(u => u.Carrera).Include(u => u.TelefonoUsuario).ToListAsync();
+                return await db.Usuario
+                    .Select(u => new
+                    {
+                        u.Email,
+                        u.TipoIdentificacionId,
+                        u.Identificacion,
+                        u.NombreCompleto,
+                        u.Contrasena,
+                        u.TipoUsuarioId,
+                        u.Fiotografia,
+                        TelefonoUsuario = u.TelefonoUsuario.Select(t => new
+                        {
+                            t.Email,
+                            t.Telefono
+                        }),
+                        TipoIdentificacion = new
+                        {
+                            u.TipoIdentificacion.TipoIdentificacionID,
+                            u.TipoIdentificacion.Nombre
+                        },
+                        TipoUsuario = new
+                        {
+                            u.TipoUsuario.TipoUsuarioId,
+                            u.TipoUsuario.Nombre
+                        },
+                        Area = u.Area.Select(a => new
+                        {
+                            a.AreaId,
+                            a.Nombre
+                        }),
+                        Carrera = u.Carrera.Select(c => new
+                        {
+                            c.CarreraId,
+                            c.NombreCarrera,
+                            c.DirectorCarrera,
+                            c.Email,
+                            c.Telefono
+                        })
+                    })
+                    .ToListAsync();
             })
             .WithName("GetAllUsuarios")
             .WithOpenApi();
 
-            group.MapGet("/{email}", async Task<Results<Ok<Usuario>, NotFound>> (string email, CarnetDigitalContext db) =>
-            {
-                var user = await db.Usuario.Include(u => u.Area).Include(u => u.Carrera).Include(u => u.TelefonoUsuario)
-                    .FirstOrDefaultAsync(model => model.Email == email);
 
-                return user is not null ? TypedResults.Ok(user) : TypedResults.NotFound();
-            })
-            .WithName("GetUsuarioById")
-            .WithOpenApi();
+            //group.MapGet("/{email}", async Task<Results<Ok<Usuario>, NotFound>> (string email, CarnetDigitalContext db) =>
+            //{
+            //    var usuario = await db.Usuario.AsNoTracking()
+            //        //.Include(u => u.RefreshToken)
+            //        .Include(u => u.TelefonoUsuario)
+            //        .Include(u => u.TipoIdentificacion)
+            //        .Include(u => u.TipoUsuario)
+            //        .Include(u => u.Area)
+            //        .Include(u => u.Carrera)
+            //        .FirstOrDefaultAsync(u => u.Email == email);
+
+            //    return usuario is not null
+            //        ? TypedResults.Ok(usuario)
+            //        : TypedResults.NotFound();
+            //})
+            //.WithName("GetUsuarioById")
+            //.WithOpenApi();
+
 
             group.MapPut("/{email}", async Task<Results<Ok, NotFound>> (string email, Usuario usuario, CarnetDigitalContext db) =>
             {

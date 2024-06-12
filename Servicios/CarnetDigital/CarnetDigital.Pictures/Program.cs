@@ -11,7 +11,6 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext<CarnetDigitalDbContext>(options =>
 {
     options.UseSqlServer("name=ConnectionStrings:DefaultConnection");
-
 });
 var app = builder.Build();
 

@@ -18,7 +18,7 @@ namespace CarnetDigital.Pictures
       var group = routes.MapGroup("/usuario").WithTags(nameof(Usuario));
 
       // Actualizar Foto con validación
-      group.MapPut("/fotografia/{id}", [Authorize] async Task<Results<Ok, NotFound, BadRequest>> (string id, [FromBody] string fotografiaBase64, CarnetDigitalDbContext db) =>
+      group.MapPut("/fotografia/{id}", async Task<Results<Ok, NotFound, BadRequest>> (string id, [FromBody] string fotografiaBase64, CarnetDigitalDbContext db) =>
       {
         if (string.IsNullOrEmpty(fotografiaBase64))
         {
@@ -40,7 +40,7 @@ namespace CarnetDigital.Pictures
       .WithOpenApi();
 
       // Eliminar Foto
-      group.MapDelete("/fotografia/{id}", [Authorize] async Task<Results<Ok, NotFound>> (string id, CarnetDigitalDbContext db) =>
+      group.MapDelete("/fotografia/{id}", async Task<Results<Ok, NotFound>> (string id, CarnetDigitalDbContext db) =>
       {
         var usuario = await db.Usuario.FindAsync(id);
         if (usuario == null)
@@ -57,7 +57,7 @@ namespace CarnetDigital.Pictures
       .WithOpenApi();
 
       // Obtener Foto
-      group.MapGet("/fotografia/{id}", [Authorize] async Task<Results<Ok<string>, NotFound>> (string id, CarnetDigitalDbContext db) =>
+      group.MapGet("/fotografia/{id}", async Task<Results<Ok<string>, NotFound>> (string id, CarnetDigitalDbContext db) =>
       {
         var usuario = await db.Usuario.FindAsync(id);
         if (usuario == null)

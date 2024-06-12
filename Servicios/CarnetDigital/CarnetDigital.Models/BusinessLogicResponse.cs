@@ -10,28 +10,21 @@ namespace CarnetDigital.BusinessLogic
     {
         public int StatusCode { get; set; } = 200;
         public string Message { get; set; } = null!;
+        public object? Data { get; set; }
 
-        public BusinessLogicResponse()
-        {
-        }
+        public BusinessLogicResponse() { }
+
         public BusinessLogicResponse(int statusCode, string message)
         {
             StatusCode = statusCode;
             Message = message;
         }
-        public BusinessLogicResponse NoContent()
-        {
-            return new BusinessLogicResponse(204, "No Content");
-        }
 
-        public BusinessLogicResponse Success(string message)
+        public BusinessLogicResponse(int statusCode, string message, object? data)
         {
-            return new BusinessLogicResponse(200, message);
-        }
-
-        public BusinessLogicResponse Error(int statusCode, string message)
-        {
-            return new BusinessLogicResponse(statusCode, message);
+            StatusCode = statusCode;
+            Message = message;
+            Data = data;
         }
     }
 }

@@ -32,7 +32,7 @@ public partial class CarnetDigitalContext : DbContext
     public virtual DbSet<Usuario> Usuario { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        => optionsBuilder.UseSqlServer("Name=DefaultConnection");
+        => optionsBuilder.UseSqlServer("Server=ALI\\MSSQLSERVER1;Database=CarnetDigital;User Id=sa;Password=123;Encrypt=False;");
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

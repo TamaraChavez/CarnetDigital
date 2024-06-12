@@ -10,8 +10,6 @@ namespace CarnetDigital.Models
     {
         public int StatusCode { get; set; } = 200;
         public string Message { get; set; } = null!;
-
-       
         public object ResponseObject { get; set; } = null!;
 
 

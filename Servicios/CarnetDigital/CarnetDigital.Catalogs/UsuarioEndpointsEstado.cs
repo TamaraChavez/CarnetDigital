@@ -3,6 +3,7 @@ using CarnetDigital.DataAccess.Models;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.OpenApi;
 using CarnetDigital.Models;
+using System.ComponentModel.DataAnnotations;
 namespace CarnetDigital.Catalogs;
 
 public static class UsuarioEndpointsEstado
@@ -43,11 +44,13 @@ public static class UsuarioEndpointsEstado
         .WithName("UpdateUsuario")
         .WithOpenApi();
 
-        group.MapPatch("/usuarios/estado", async Task<Results<Ok, NotFound, BadRequest>> (string email, Usuario usuario, CarnetDigitalContext db) =>
+        group.MapPatch("/usuarios/estado", async Task<Results<Ok, NotFound, BadRequest>> (string email, EstadoDAO usuario, CarnetDigitalContext db) =>
         {
-            // Aquí deberías agregar tu lógica de validación y asignar el resultado a isValid y validationResults
-            bool isValid = true; // Cambia esto a tu lógica de validación
-            var validationResults = new List<string>(); // Lista de errores de validación
+            // Validar el objeto UsuarioDAO
+            var validationResults = new List<ValidationResult>();
+            var validationContext = new ValidationContext(usuario);
+            bool isValid = Validator.TryValidateObject(usuario, validationContext, validationResults, true);
+
 
             if (!isValid)
             {
@@ -75,7 +78,7 @@ public static class UsuarioEndpointsEstado
             }
 
             // Modificar el estado del usuario
-            existingUser.Estado = usuario.Estado;
+            existingUser.Estado = usuario.EstadoID;
 
             // Guardar los cambios en la base de datos
             await db.SaveChangesAsync();

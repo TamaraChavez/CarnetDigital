@@ -13,7 +13,7 @@ namespace CarnetDigital.Catalogs
         public int Email { get; set; }
 
         [NoEmptyOrWhiteSpaceAttribute(ErrorMessage = "")]
-        public string  EstadoID { get; set; } = null!;
+        public byte EstadoID { get; set; } 
 
         public class NoEmptyOrWhiteSpaceAttributeEmail : ValidationAttribute
         {

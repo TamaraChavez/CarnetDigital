@@ -15,7 +15,7 @@ namespace CarnetDigital.Pictures
     // Este método mapea los endpoints relacionados con las fotografias
     public static void MapFotografiaEndpoints(this IEndpointRouteBuilder routes)
     {
-      var group = routes.MapGroup("/usuario").WithTags(nameof(Usuario));
+      var group = routes.MapGroup("/usuario");
 
       // Actualizar Foto con validación
       group.MapPatch("/fotografia/{id}", async Task<Results<Ok, NotFound, BadRequest>> (string id, [FromBody] string fotografiaBase64, CarnetDigitalDbContext db) =>

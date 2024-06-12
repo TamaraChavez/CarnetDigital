@@ -20,12 +20,6 @@ namespace CarnetDigital.Models
             StatusCode = statusCode;
             Message = message;
         }
-        public BusinessLogicResponse(int statusCode, string message, object? data)
-        {
-            StatusCode = statusCode;
-            Message = message;
-            Data = data;
-        }
 
     }
 }

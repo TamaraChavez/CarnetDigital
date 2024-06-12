@@ -15,14 +15,6 @@ namespace CarnetDigital.Users
         {
             var group = routes.MapGroup("/api/Usuario").WithTags(nameof(Usuario));
 
-            //group.MapGet("/", async (CarnetDigitalContext db) =>
-            //{
-            //    return await db.Usuario.ToListAsync();
-            //})
-            //.WithName("GetAllUsuarios")
-            //.WithOpenApi();
-
-
 
             group.MapGet("/", async (CarnetDigitalContext db) =>
             {
@@ -67,24 +59,6 @@ namespace CarnetDigital.Users
             .WithName("GetAllUsuarios")
             .WithOpenApi();
 
-
-            //group.MapGet("/{email}", async Task<Results<Ok<Usuario>, NotFound>> (string email, CarnetDigitalContext db) =>
-            //{
-            //    var usuario = await db.Usuario.AsNoTracking()
-            //        //.Include(u => u.RefreshToken)
-            //        .Include(u => u.TelefonoUsuario)
-            //        .Include(u => u.TipoIdentificacion)
-            //        .Include(u => u.TipoUsuario)
-            //        .Include(u => u.Area)
-            //        .Include(u => u.Carrera)
-            //        .FirstOrDefaultAsync(u => u.Email == email);
-
-            //    return usuario is not null
-            //        ? TypedResults.Ok(usuario)
-            //        : TypedResults.NotFound();
-            //})
-            //.WithName("GetUsuarioById")
-            //.WithOpenApi();
 
             group.MapPost("/", async (UsuarioDAO usuarioDAO, CarnetDigitalContext db) =>
             {

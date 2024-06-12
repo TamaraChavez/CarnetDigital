@@ -1,4 +1,4 @@
-using CarnetDigital.DataAccess.Models;
+﻿using CarnetDigital.DataAccess.Models;
 using Microsoft.EntityFrameworkCore;
 using CarnetDigital.Catalogs;
 
@@ -28,6 +28,8 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 
 app.MapEstadosEndpoints();
+
+app.MapUsuarioEndpoints();
 
 
 app.Run();

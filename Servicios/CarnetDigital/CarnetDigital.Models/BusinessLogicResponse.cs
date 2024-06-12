@@ -11,6 +11,8 @@ namespace CarnetDigital.Models
         public int StatusCode { get; set; } = 200;
         public string Message { get; set; } = null!;
 
+        public object ResponseObject { get; set; } = null!;
+
         public BusinessLogicResponse() 
         { 
         }
@@ -20,19 +22,6 @@ namespace CarnetDigital.Models
             Message = message;
         }
 
-        public BusinessLogicResponse NoContent()
-        {
-            return new BusinessLogicResponse(204, "No Content");
-        }
 
-        public BusinessLogicResponse Success(string message)
-        {
-            return new BusinessLogicResponse(200, message);
-        }
-
-        public BusinessLogicResponse Error(int statusCode, string message)
-        {
-            return new BusinessLogicResponse(statusCode, message);
-        }
     }
 }

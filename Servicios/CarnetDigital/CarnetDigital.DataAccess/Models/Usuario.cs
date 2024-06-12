@@ -11,6 +11,7 @@ public class Usuario
     public string Identificacion { get; set; } = null!;
     public string NombreCompleto { get; set; } = null!;
     public string Contrasena { get; set; } = null!;
+    public byte Estado { get; set; }
     public byte TipoUsuarioId { get; set; }
     public string? Fiotografia { get; set; }
 
@@ -20,6 +21,8 @@ public class Usuario
     public virtual TipoUsuario TipoUsuario { get; set; } = null!;
     public virtual ICollection<Area> Area { get; set; } = new List<Area>();
     public virtual ICollection<Carrera> Carrera { get; set; } = new List<Carrera>();
+
+}
     //public string Email { get; set; } = null!;
 
     //public byte TipoIdentificacionId { get; set; }
@@ -30,7 +33,7 @@ public class Usuario
 
     //public string Contrasena { get; set; } = null!;
 
-    ////public byte Estado { get; set; }
+    ////
 
     //public byte TipoUsuarioId { get; set; }
 
@@ -49,4 +52,3 @@ public class Usuario
     //public virtual ICollection<Area> Area { get; set; } = new List<Area>();
 
     //public virtual ICollection<Carrera> Carrera { get; set; } = new List<Carrera>();
-}

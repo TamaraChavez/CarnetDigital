@@ -14,8 +14,7 @@ namespace CarnetDigital.Models
         public string Email { get; set; } = null!;
 
         [Required(AllowEmptyStrings = false, ErrorMessage = "La foto es requerida")]
-        public string FotoBase64 { get; set; } = null!;
-
+        public string? Fotografia { get; set; }
 
     }
 }

@@ -2,94 +2,68 @@
 using CarnetDigital.DataAccess.Models;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.OpenApi;
-using Microsoft.AspNetCore.Authorization;
-using System.Drawing;
-using System.Drawing.Imaging;
-using System.IO;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.BlazorIdentity.Pages.Manage;
-using CarnetDigital.BusinessLogic;
-using CarnetDigital.Models;
-using System.ComponentModel.DataAnnotations;
+namespace CarnetDigital.Pictures;
 
-namespace CarnetDigital.Pictures
+public static class FotografiaEndpoints
 {
-    public static class FotografiaEndpoints
+    public static void MapUsuarioEndpoints (this IEndpointRouteBuilder routes)
     {
-        // Este método mapea los endpoints relacionados con las fotografias
-        public static void MapFotografiaEndpoints(this IEndpointRouteBuilder routes)
+        var group = routes.MapGroup("/api/Usuario").WithTags(nameof(Usuario));
+
+        group.MapGet("/", async (CarnetDigitalDbContext db) =>
         {
-            var group = routes.MapGroup("/usuario/fotografia").WithTags(nameof(Usuario));
+            return await db.Usuario.ToListAsync();
+        })
+        .WithName("GetAllUsuarios")
+        .WithOpenApi();
 
-            // Actualizar Foto con validación
-            group.MapPatch("/{email}", async Task<BusinessLogicResponse> (
-                string email,
-                [FromBody] FotografiaDAO fotografiaDAO,
-                CarnetDigitalDbContext db) =>
-            {
-                if (!ValidationHelper.Validate(fotografiaDAO, out var validationResults))
-                {
-                    return new BusinessLogicResponse(400, string.Join("; ", validationResults.Select(r => r.ErrorMessage)));
-                }
-
-                var usuario = await db.Usuario.FirstOrDefaultAsync(u => u.Email == email);
-                if (usuario == null)
-                {
-                    return new BusinessLogicResponse(404, "Usuario no encontrado.");
-                }
-
-                usuario.Fotografia = fotografiaDAO.FotoBase64;
-                await db.SaveChangesAsync();
-
-                return new BusinessLogicResponse(200, "Fotografía actualizada exitosamente.");
-            })
-            .WithName("ModificarFotografia")
-            .WithOpenApi();
-
-            // Eliminar Foto
-            group.MapDelete("/{email}", async Task<BusinessLogicResponse> (
-                string email,
-                CarnetDigitalDbContext db) =>
-            {
-                var usuario = await db.Usuario.FirstOrDefaultAsync(u => u.Email == email);
-                if (usuario == null)
-                {
-                    return new BusinessLogicResponse(404, "Usuario no encontrado.");
-                }
-
-                usuario.Fotografia = null;
-                await db.SaveChangesAsync();
-
-                return new BusinessLogicResponse(200, "Fotografía eliminada exitosamente.");
-            })
-            .WithName("BorrarFotografia")
-            .WithOpenApi();
-
-            // Obtener Foto
-            group.MapGet("/{email}", async Task<BusinessLogicResponse> (
-                string email,
-                CarnetDigitalDbContext db) =>
-            {
-                var usuario = await db.Usuario.FirstOrDefaultAsync(u => u.Email == email);
-                if (usuario == null)
-                {
-                    return new BusinessLogicResponse(404, "Usuario no encontrado.");
-                }
-
-                return new BusinessLogicResponse(200, "Fotografía obtenida exitosamente.", usuario.Fotografia);
-            })
-            .WithName("GetUsuarioFotografia")
-            .WithOpenApi();
-        }
-
-        public static class ValidationHelper
+        group.MapGet("/{id}", async Task<Results<Ok<Usuario>, NotFound>> (string email, CarnetDigitalDbContext db) =>
         {
-            public static bool Validate<T>(T model, out List<ValidationResult> results)
-            {
-                var context = new ValidationContext(model, serviceProvider: null, items: null);
-                results = new List<ValidationResult>();
-                return Validator.TryValidateObject(model, context, results, true);
-            }
-        }
+            return await db.Usuario.AsNoTracking()
+                .FirstOrDefaultAsync(model => model.Email == email)
+                is Usuario model
+                    ? TypedResults.Ok(model)
+                    : TypedResults.NotFound();
+        })
+        .WithName("GetUsuarioById")
+        .WithOpenApi();
+
+        group.MapPut("/{id}", async Task<Results<Ok, NotFound>> (string email, Usuario usuario, CarnetDigitalDbContext db) =>
+        {
+            var affected = await db.Usuario
+                .Where(model => model.Email == email)
+                .ExecuteUpdateAsync(setters => setters
+                    .SetProperty(m => m.Email, usuario.Email)
+                    .SetProperty(m => m.TipoIdentificacionId, usuario.TipoIdentificacionId)
+                    .SetProperty(m => m.Identificacion, usuario.Identificacion)
+                    .SetProperty(m => m.NombreCompleto, usuario.NombreCompleto)
+                    .SetProperty(m => m.Contrasena, usuario.Contrasena)
+                    .SetProperty(m => m.Estado, usuario.Estado)
+                    .SetProperty(m => m.TipoUsuarioId, usuario.TipoUsuarioId)
+                    .SetProperty(m => m.Fotografia, usuario.Fotografia)
+                    );
+            return affected == 1 ? TypedResults.Ok() : TypedResults.NotFound();
+        })
+        .WithName("UpdateUsuario")
+        .WithOpenApi();
+
+        group.MapPost("/", async (Usuario usuario, CarnetDigitalDbContext db) =>
+        {
+            db.Usuario.Add(usuario);
+            await db.SaveChangesAsync();
+            return TypedResults.Created($"/api/Usuario/{usuario.Email}",usuario);
+        })
+        .WithName("CreateUsuario")
+        .WithOpenApi();
+
+        group.MapDelete("/{id}", async Task<Results<Ok, NotFound>> (string email, CarnetDigitalDbContext db) =>
+        {
+            var affected = await db.Usuario
+                .Where(model => model.Email == email)
+                .ExecuteDeleteAsync();
+            return affected == 1 ? TypedResults.Ok() : TypedResults.NotFound();
+        })
+        .WithName("DeleteUsuario")
+        .WithOpenApi();
     }
 }

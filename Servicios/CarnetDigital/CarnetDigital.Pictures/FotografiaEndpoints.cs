@@ -1,7 +1,11 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using CarnetDigital.DataAccess.Models;
+using CarnetDigital.Models;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.OpenApi;
+using Microsoft.AspNetCore.Mvc;
+using System.ComponentModel.DataAnnotations;
+using CarnetDigital.BusinessLogic;
 namespace CarnetDigital.Pictures;
 
 public static class FotografiaEndpoints
@@ -10,60 +14,107 @@ public static class FotografiaEndpoints
     {
         var group = routes.MapGroup("/api/Usuario").WithTags(nameof(Usuario));
 
-        group.MapGet("/", async (CarnetDigitalDbContext db) =>
+        // Actualizar Foto con validación
+        group.MapPatch("/{email}", async Task<BusinessLogicResponse> (
+            string email,
+            [FromBody] FotografiaDAO fotografiaDAO,
+            CarnetDigitalDbContext db) =>
         {
-            return await db.Usuario.ToListAsync();
-        })
-        .WithName("GetAllUsuarios")
-        .WithOpenApi();
+            if (!ValidationHelper.Validate(fotografiaDAO, out var validationResults))
+            {
+                return new BusinessLogicResponse(400, string.Join("; ", validationResults.Select(r => r.ErrorMessage)));
+            }
 
-        group.MapGet("/{id}", async Task<Results<Ok<Usuario>, NotFound>> (string email, CarnetDigitalDbContext db) =>
-        {
-            return await db.Usuario.AsNoTracking()
-                .FirstOrDefaultAsync(model => model.Email == email)
-                is Usuario model
-                    ? TypedResults.Ok(model)
-                    : TypedResults.NotFound();
-        })
-        .WithName("GetUsuarioById")
-        .WithOpenApi();
+            var usuario = await db.Usuario.FirstOrDefaultAsync(u => u.Email == email);
+            if (usuario == null)
+            {
+                return new BusinessLogicResponse(404, "Usuario no encontrado.");
+            }
 
-        group.MapPut("/{id}", async Task<Results<Ok, NotFound>> (string email, Usuario usuario, CarnetDigitalDbContext db) =>
-        {
-            var affected = await db.Usuario
-                .Where(model => model.Email == email)
-                .ExecuteUpdateAsync(setters => setters
-                    .SetProperty(m => m.Email, usuario.Email)
-                    .SetProperty(m => m.TipoIdentificacionId, usuario.TipoIdentificacionId)
-                    .SetProperty(m => m.Identificacion, usuario.Identificacion)
-                    .SetProperty(m => m.NombreCompleto, usuario.NombreCompleto)
-                    .SetProperty(m => m.Contrasena, usuario.Contrasena)
-                    .SetProperty(m => m.Estado, usuario.Estado)
-                    .SetProperty(m => m.TipoUsuarioId, usuario.TipoUsuarioId)
-                    .SetProperty(m => m.Fotografia, usuario.Fotografia)
-                    );
-            return affected == 1 ? TypedResults.Ok() : TypedResults.NotFound();
-        })
-        .WithName("UpdateUsuario")
-        .WithOpenApi();
-
-        group.MapPost("/", async (Usuario usuario, CarnetDigitalDbContext db) =>
-        {
-            db.Usuario.Add(usuario);
+            usuario.Fotografia = fotografiaDAO.Fotografia;
             await db.SaveChangesAsync();
-            return TypedResults.Created($"/api/Usuario/{usuario.Email}",usuario);
+
+            return new BusinessLogicResponse(200, "Fotografía actualizada exitosamente.");
         })
-        .WithName("CreateUsuario")
+        .WithName("ModificarFotografia")
         .WithOpenApi();
 
-        group.MapDelete("/{id}", async Task<Results<Ok, NotFound>> (string email, CarnetDigitalDbContext db) =>
+        // Eliminar Foto
+        group.MapDelete("/{email}", async Task<BusinessLogicResponse> (
+            string email,
+            CarnetDigitalDbContext db) =>
         {
-            var affected = await db.Usuario
-                .Where(model => model.Email == email)
-                .ExecuteDeleteAsync();
-            return affected == 1 ? TypedResults.Ok() : TypedResults.NotFound();
+            var usuario = await db.Usuario.FirstOrDefaultAsync(u => u.Email == email);
+            if (usuario == null)
+            {
+                return new BusinessLogicResponse(404, "Usuario no encontrado.");
+            }
+
+            usuario.Fotografia = null;
+            await db.SaveChangesAsync();
+
+            return new BusinessLogicResponse(200, "Fotografía eliminada exitosamente.");
         })
-        .WithName("DeleteUsuario")
+        .WithName("BorrarFotografia")
         .WithOpenApi();
+
+        // Obtener Foto
+        group.MapGet("/{email}", async Task<BusinessLogicResponse> (
+            string email,
+            CarnetDigitalDbContext db) =>
+        {
+            var usuario = await db.Usuario.FirstOrDefaultAsync(u => u.Email == email);
+            if (usuario == null)
+            {
+                return new BusinessLogicResponse(404, "Usuario no encontrado.");
+            }
+
+            return new BusinessLogicResponse(200, "Fotografía obtenida exitosamente.", usuario.Fotografia);
+        })
+        .WithName("GetUsuarioFotografia")
+        .WithOpenApi();
+
+        group.MapPost("/", async Task<BusinessLogicResponse> (
+         [FromBody] FotografiaDAO fotografiaDAO,
+         CarnetDigitalDbContext db) =>
+        {
+            if (!ValidationHelper.Validate(fotografiaDAO, out var validationResults))
+            {
+                return new BusinessLogicResponse(400, string.Join("; ", validationResults.Select(r => r.ErrorMessage)));
+            }
+
+            var usuario = await db.Usuario.FirstOrDefaultAsync(u => u.Email == fotografiaDAO.Email);
+            if (usuario == null)
+            {
+                return new BusinessLogicResponse(404, "Usuario no encontrado.");
+            }
+
+            if (!string.IsNullOrEmpty(usuario.Fotografia))
+            {
+                return new BusinessLogicResponse(400, "El usuario ya tiene una fotografía.");
+            }
+
+            usuario.Fotografia = fotografiaDAO.Fotografia;
+            await db.SaveChangesAsync();
+
+            return new BusinessLogicResponse(201, "Fotografía agregada exitosamente.");
+        })
+       .WithName("AgregarFotografia")
+       .WithOpenApi();
+
+
+
+
+
+    }
+
+    public static class ValidationHelper
+    {
+        public static bool Validate<T>(T model, out List<ValidationResult> results)
+        {
+            var context = new ValidationContext(model, serviceProvider: null, items: null);
+            results = new List<ValidationResult>();
+            return Validator.TryValidateObject(model, context, results, true);
+        }
     }
 }

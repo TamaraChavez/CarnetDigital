@@ -70,7 +70,16 @@ group.MapPost("/", async (TipoIdentificacion tI, TipoIdentificacionDAO tipoIdent
     }
     db.TipoIdentificacion.Add(tI);
     await db.SaveChangesAsync();
-    return TypedResults.Created($"/api/TipoIdentificacion/{tI.TipoIdentificacionId}",tipoIdentificacion);
+
+    var createdResponse = new BusinessLogicResponse
+    {
+        StatusCode = 201,
+        Message = "Usuario creado exitosamente",
+        Data = tipoIdentificacion
+    };
+
+    return TypedResults.Created($"/api/TipoIdentificacion/{tI.TipoIdentificacionId}", createdResponse);
+    //return TypedResults.Created($"/api/TipoIdentificacion/{tI.TipoIdentificacionId}",tipoIdentificacion);
 })
 .WithName("CreateTipoIdentificacion")
 .WithOpenApi();

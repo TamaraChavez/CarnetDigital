@@ -51,11 +51,26 @@ group.MapPut("/{id}", async Task<Results<Ok, NotFound>> (byte tipoidentificacion
         .WithName("UpdateTipoIdentificacion")
         .WithOpenApi();
 
-group.MapPost("/", async (TipoIdentificacion tipoIdentificacion, CarnetDigitalDbContext db) =>
+group.MapPost("/", async (TipoIdentificacion tI, TipoIdentificacionDAO tipoIdentificacion, CarnetDigitalDbContext db) =>
 {
-    db.TipoIdentificacion.Add(tipoIdentificacion);
+    var validationResults = new List<ValidationResult>();
+    var validationContext = new ValidationContext(tipoIdentificacion);
+    bool isValid = Validator.TryValidateObject(tipoIdentificacion, validationContext, validationResults, true);
+
+    if (!isValid)
+    {
+        // Si hay errores de validación, devolverlos en la respuesta
+        var response = new BusinessLogicResponse
+        {
+            StatusCode = 400,
+            Message = "Errores de validación",
+            Data = validationResults
+        };
+        return Results.BadRequest(response);
+    }
+    db.TipoIdentificacion.Add(tI);
     await db.SaveChangesAsync();
-    return TypedResults.Created($"/api/TipoIdentificacion/{tipoIdentificacion.TipoIdentificacionId}",tipoIdentificacion);
+    return TypedResults.Created($"/api/TipoIdentificacion/{tI.TipoIdentificacionId}",tipoIdentificacion);
 })
 .WithName("CreateTipoIdentificacion")
 .WithOpenApi();

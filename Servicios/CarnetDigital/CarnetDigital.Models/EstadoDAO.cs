@@ -9,10 +9,10 @@ namespace CarnetDigital.Catalogs
 {
     public class EstadoDAO
     {
-        [NoEmptyOrWhiteSpaceAttributeEmail( ErrorMessage = "El estado de la persona es requerido")]
+        [NoEmptyOrWhiteSpaceAttributeEmail( ErrorMessage = "")]
         public int Email { get; set; }
 
-        [NoEmptyOrWhiteSpaceAttribute(ErrorMessage = "La descripción es requerido")]
+        [NoEmptyOrWhiteSpaceAttribute(ErrorMessage = "")]
         public string  EstadoID { get; set; } = null!;
 
         public class NoEmptyOrWhiteSpaceAttributeEmail : ValidationAttribute

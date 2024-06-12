@@ -9,10 +9,41 @@ namespace CarnetDigital.Catalogs
 {
     public class EstadoDAO
     {
-        [Required( ErrorMessage = "El estado de la persona es requerido")]
-        public int EstadoID { get; set; }
+        [NoEmptyOrWhiteSpaceAttributeEmail( ErrorMessage = "El estado de la persona es requerido")]
+        public int Email { get; set; }
 
-        [Required(ErrorMessage = "La descripción es requerido")]
-        public string Descripcion { get; set; } = null!;
+        [NoEmptyOrWhiteSpaceAttribute(ErrorMessage = "La descripción es requerido")]
+        public string  EstadoID { get; set; } = null!;
+
+        public class NoEmptyOrWhiteSpaceAttributeEmail : ValidationAttribute
+        {
+            protected override ValidationResult? IsValid(object? value, ValidationContext validationContext)
+            {
+                if (value is string stringValue)
+                {
+                    if (string.IsNullOrWhiteSpace(stringValue))
+                    {
+                        return new ValidationResult("El email no puede estar vacío ni contener solo espacios en blanco.");
+                    }
+                }
+                return ValidationResult.Success;
+            }
+        }
+
+        public class NoEmptyOrWhiteSpaceAttribute : ValidationAttribute
+        {
+            protected override ValidationResult? IsValid(object? value, ValidationContext validationContext)
+            {
+                if (value is string stringValue)
+                {
+                    if (string.IsNullOrWhiteSpace(stringValue))
+                    {
+                        return new ValidationResult("El código del estado no puede estar vacío ni contener solo espacios en blanco.");
+                    }
+                }
+                return ValidationResult.Success;
+            }
+        }
+
     }
 }

@@ -25,7 +25,7 @@ namespace CarnetDigital.Models
         [Required(AllowEmptyStrings = false, ErrorMessage = "La identificación es requerida")]
         public string Identificacion { get; set; } = null!;
 
-        [Required(AllowEmptyStrings = false, ErrorMessage = "El nombre completo es requerido")]
+        //[Required(AllowEmptyStrings = false, ErrorMessage = "El nombre completo es requerido")]
         [NoEmptyOrWhiteSpace(ErrorMessage = "El nombre completo no puede estar vacío ni contener solo espacios en blanco.")]
         public string NombreCompleto { get; set; } = null!;
 

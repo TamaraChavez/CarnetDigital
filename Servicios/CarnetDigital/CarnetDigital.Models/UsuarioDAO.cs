@@ -26,7 +26,7 @@ namespace CarnetDigital.Models
         public string Identificacion { get; set; } = null!;
 
         //[Required(AllowEmptyStrings = false, ErrorMessage = "El nombre completo es requerido")]
-        [NoEmptyOrWhiteSpace(ErrorMessage = "El nombre completo no puede estar vacío ni contener solo espacios en blanco.")]
+        [NoEmptyOrWhiteSpace(ErrorMessage = "")]
         public string NombreCompleto { get; set; } = null!;
 
         [Required(AllowEmptyStrings = false, ErrorMessage = "La contraseña es requerida")]
@@ -81,7 +81,7 @@ namespace CarnetDigital.Models
                 {
                     if (string.IsNullOrWhiteSpace(stringValue))
                     {
-                        return new ValidationResult("El campo no puede estar vacío ni contener solo espacios en blanco.");
+                        return new ValidationResult("El nombre completo no puede estar vacío ni contener solo espacios en blanco.");
                     }
                 }
                 return ValidationResult.Success;

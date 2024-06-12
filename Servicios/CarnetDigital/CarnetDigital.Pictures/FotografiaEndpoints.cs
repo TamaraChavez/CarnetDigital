@@ -15,18 +15,12 @@ namespace CarnetDigital.Pictures
     // Este método mapea los endpoints relacionados con las fotografias
     public static void MapFotografiaEndpoints(this IEndpointRouteBuilder routes)
     {
-      var group = routes.MapGroup("/api/Usuario").WithTags(nameof(Usuario));
+      var group = routes.MapGroup("/usuario").WithTags(nameof(Usuario));
 
       // Actualizar Foto con validación
       group.MapPut("/fotografia/{id}", [Authorize] async Task<Results<Ok, NotFound, BadRequest>> (string id, [FromBody] string fotografiaBase64, CarnetDigitalDbContext db) =>
       {
         if (string.IsNullOrEmpty(fotografiaBase64))
-        {
-          return TypedResults.BadRequest();
-        }
-
-        // Validar el formato y tamaño de la foto
-        if (!TryValidatePhoto(fotografiaBase64, out var validationMessage))
         {
           return TypedResults.BadRequest();
         }
@@ -42,7 +36,7 @@ namespace CarnetDigital.Pictures
 
         return TypedResults.Ok();
       })
-      .WithName("UpdateFotografia")
+      .WithName("ModificarFotografia")
       .WithOpenApi();
 
       // Eliminar Foto
@@ -59,7 +53,7 @@ namespace CarnetDigital.Pictures
 
         return TypedResults.Ok();
       })
-      .WithName("DeleteFotografia")
+      .WithName("BorrarFotografia")
       .WithOpenApi();
 
       // Obtener Foto
@@ -73,57 +67,8 @@ namespace CarnetDigital.Pictures
 
         return TypedResults.Ok(usuario.Fotografia);
       })
-      .WithName("GetFotografia")
+      .WithName("ObtenerFotografia")
       .WithOpenApi();
-    }
-
-    // Este método intenta validar la foto recibida
-    private static bool TryValidatePhoto(string base64Image, out string validationMessage)
-    {
-      validationMessage = string.Empty;
-
-      try
-      {
-        // Convertir la cadena Base64 en un array de bytes
-        byte[] imageBytes = Convert.FromBase64String(base64Image);
-
-        // Cargar el array de bytes en un MemoryStream
-        using (var ms = new MemoryStream(imageBytes))
-        {
-          // Cargar la imagen desde el MemoryStream
-          using (var image = Image.FromStream(ms))
-          {
-            // Verificar el formato de la imagen
-            if (image.RawFormat != ImageFormat.Jpeg && image.RawFormat != ImageFormat.Png)
-            {
-              validationMessage = "La imagen debe estar en formato JPEG o PNG.";
-              return false;
-            }
-
-            // Verificar las dimensiones de la imagen (relación de aspecto 4:3)
-            if (image.Width * 3 != image.Height * 4)
-            {
-              validationMessage = "La imagen debe tener una proporción de aspecto 4:3.";
-              return false;
-            }
-
-            // Verificar el tamaño de la imagen (por ejemplo, máximo 2MB)
-            const int maxSizeInBytes = 2 * 1024 * 1024;
-            if (imageBytes.Length > maxSizeInBytes)
-            {
-              validationMessage = "El tamaño de la imagen no debe superar los 2MB.";
-              return false;
-            }
-          }
-        }
-      }
-      catch (Exception)
-      {
-        validationMessage = "La imagen no es válida o está dañada.";
-        return false;
-      }
-
-      return true;
     }
   }
 }

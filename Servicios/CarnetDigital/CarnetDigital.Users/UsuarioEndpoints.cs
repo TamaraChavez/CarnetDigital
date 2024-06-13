@@ -60,64 +60,64 @@ namespace CarnetDigital.Users
             .WithOpenApi();
 
 
-            //group.MapPost("/", async (UsuarioDAO usuarioDAO, CarnetDigitalContext db) =>
-            //{
-            //    // Validar el objeto UsuarioDAO
-            //    var validationResults = new List<ValidationResult>();
-            //    var validationContext = new ValidationContext(usuarioDAO);
-            //    bool isValid = Validator.TryValidateObject(usuarioDAO, validationContext, validationResults, true);
+            group.MapPost("/", async (UsuarioDAO usuarioDAO, CarnetDigitalContext db) =>
+            {
+                // Validar el objeto UsuarioDAO
+                var validationResults = new List<ValidationResult>();
+                var validationContext = new ValidationContext(usuarioDAO);
+                bool isValid = Validator.TryValidateObject(usuarioDAO, validationContext, validationResults, true);
 
-            //    if (!isValid)
-            //    {
-            //        // Si hay errores de validación, devolverlos en la respuesta
-            //        var response = new BusinessLogicResponse
-            //        {
-            //            StatusCode = 400,
-            //            Message = "Errores de validación",
-            //            ResponseObject = validationResults
-            //        };
-            //        return Results.BadRequest(response);
-            //    }
+                if (!isValid)
+                {
+                    // Si hay errores de validación, devolverlos en la respuesta
+                    var response = new BusinessLogicResponse
+                    {
+                        StatusCode = 400,
+                        Message = "Errores de validación",
+                        ResponseObject = validationResults
+                    };
+                    return Results.BadRequest(response);
+                }
 
-            //    if (db.Usuario.Any(u => u.Email == usuarioDAO.Email))
-            //    {
-            //        var response = new BusinessLogicResponse
-            //        {
-            //            StatusCode = 409, // Conflict
-            //            Message = "El correo electrónico ya está en uso"
-            //        };
-            //        return Results.Conflict(response);
-            //    }
+                if (db.Usuario.Any(u => u.Email == usuarioDAO.Email))
+                {
+                    var response = new BusinessLogicResponse
+                    {
+                        StatusCode = 409, // Conflict
+                        Message = "El correo electrónico ya está en uso"
+                    };
+                    return Results.Conflict(response);
+                }
 
-            //    // Crear objeto Usuario a partir de UsuarioDAO después de las validaciones
-            //    var usuario = new Usuario
-            //    {
-            //        Email = usuarioDAO.Email,
-            //        TipoIdentificacionId = usuarioDAO.TipoIdentificacionid,
-            //        Identificacion = usuarioDAO.Identificacion,
-            //        NombreCompleto = usuarioDAO.NombreCompleto,
-            //        Contrasena = usuarioDAO.Contrasena,
-            //        TipoUsuarioId = GetTipoUsuarioId(usuarioDAO.Email, usuarioDAO.TipoUsuarioid, db),
-            //        Estado = 1,
-            //        // Si tienes que mapear más propiedades, hazlo aquí
-            //    };
+                // Crear objeto Usuario a partir de UsuarioDAO después de las validaciones
+                var usuario = new Usuario
+                {
+                    Email = usuarioDAO.Email,
+                    TipoIdentificacionId = usuarioDAO.TipoIdentificacionid,
+                    Identificacion = usuarioDAO.Identificacion,
+                    NombreCompleto = usuarioDAO.NombreCompleto,
+                    Contrasena = HashPassword(usuarioDAO.Contrasena),
+                    TipoUsuarioId = GetTipoUsuarioId(usuarioDAO.Email, usuarioDAO.TipoUsuarioid, db),
+                    Estado = 1,
+                    // Si tienes que mapear más propiedades, hazlo aquí
+                };
 
 
-            //    // Agregar usuario a la base de datos y guardar cambios
-            //    db.Usuario.Add(usuario);
-            //    await db.SaveChangesAsync();
+                // Agregar usuario a la base de datos y guardar cambios
+                db.Usuario.Add(usuario);
+                await db.SaveChangesAsync();
 
-            //    var createdResponse = new BusinessLogicResponse
-            //    {
-            //        StatusCode = 201,
-            //        Message = "Usuario creado exitosamente",
-            //        ResponseObject = usuario
-            //    };
+                var createdResponse = new BusinessLogicResponse
+                {
+                    StatusCode = 201,
+                    Message = "Usuario creado exitosamente",
+                    ResponseObject = usuario
+                };
 
-            //    return Results.Created($"/api/Usuario/{usuario.Email}", createdResponse);
-            //})
-            //.WithName("CreateUsuario")
-            //.WithOpenApi();
+                return Results.Created($"/api/Usuario/{usuario.Email}", createdResponse);
+            })
+            .WithName("CreateUsuario")
+            .WithOpenApi();
 
             group.MapPut("/{email}", async (string email, UsuarioDAO usuarioDAO, CarnetDigitalContext db) =>
             {
@@ -155,7 +155,7 @@ namespace CarnetDigital.Users
                 existingUser.TipoIdentificacionId = usuarioDAO.TipoIdentificacionid;
                 existingUser.Identificacion = usuarioDAO.Identificacion;
                 existingUser.NombreCompleto = usuarioDAO.NombreCompleto;
-                existingUser.Contrasena = usuarioDAO.Contrasena;
+                existingUser.Contrasena = HashPassword(usuarioDAO.Contrasena);
                 existingUser.TipoUsuarioId = GetTipoUsuarioId(usuarioDAO.Email, usuarioDAO.TipoUsuarioid, db);
                 // Actualizar más propiedades si es necesario
 
@@ -176,6 +176,43 @@ namespace CarnetDigital.Users
             .WithOpenApi();
 
 
+
+
+            group.MapDelete("/{email}", async Task<Results<Ok, NotFound>> (string email, CarnetDigitalContext db) =>
+            {
+                var affected = await db.Usuario
+                    .Where(model => model.Email == email)
+                    .ExecuteDeleteAsync();
+                return affected == 1 ? TypedResults.Ok() : TypedResults.NotFound();
+            })
+            .WithName("DeleteUsuario")
+            .WithOpenApi();
+        }
+
+        private static string HashPassword(string password)
+        {
+            return BCrypt.Net.BCrypt.HashPassword(password);
+        }
+
+        private static bool VerificarPassword(string password, string hashedPassword)
+        {
+            return BCrypt.Net.BCrypt.Verify(password, hashedPassword);
+        }
+
+        private static byte GetTipoUsuarioId(string email, byte requestedTipoUsuarioId, CarnetDigitalContext db)
+        {
+            if (email.EndsWith("@cuc.ac.cr"))
+            {
+                var tipoUsuario = db.TipoUsuario.FirstOrDefault(tu => tu.Nombre == "funcionario" || tu.Nombre == "administrador");
+                if (tipoUsuario != null)
+                {
+                    return tipoUsuario.TipoUsuarioId;
+                }
+            }
+            return requestedTipoUsuarioId;
+        }
+    }
+}          
             //group.MapPut("/{email}", async (string email, Usuario usuario, CarnetDigitalContext db) =>
             //{
             //    // Verificar si el usuario existe
@@ -310,40 +347,3 @@ namespace CarnetDigital.Users
             //})
             //.WithName("CreateUsuariouser")
             //.WithOpenApi();
-
-
-            group.MapDelete("/{email}", async Task<Results<Ok, NotFound>> (string email, CarnetDigitalContext db) =>
-            {
-                var affected = await db.Usuario
-                    .Where(model => model.Email == email)
-                    .ExecuteDeleteAsync();
-                return affected == 1 ? TypedResults.Ok() : TypedResults.NotFound();
-            })
-            .WithName("DeleteUsuario")
-            .WithOpenApi();
-        }
-
-        private static string HashPassword(string password)
-        {
-            return BCrypt.Net.BCrypt.HashPassword(password);
-        }
-
-        private static bool VerifyPassword(string password, string hashedPassword)
-        {
-            return BCrypt.Net.BCrypt.Verify(password, hashedPassword);
-        }
-
-        private static byte GetTipoUsuarioId(string email, byte requestedTipoUsuarioId, CarnetDigitalContext db)
-        {
-            if (email.EndsWith("@cuc.ac.cr"))
-            {
-                var tipoUsuario = db.TipoUsuario.FirstOrDefault(tu => tu.Nombre == "funcionario" || tu.Nombre == "administrador");
-                if (tipoUsuario != null)
-                {
-                    return tipoUsuario.TipoUsuarioId;
-                }
-            }
-            return requestedTipoUsuarioId;
-        }
-    }
-}

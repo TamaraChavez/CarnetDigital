@@ -59,7 +59,6 @@ namespace CarnetDigital.Users
             .WithName("GetAllUsuarios")
             .WithOpenApi();
 
-
             group.MapPost("/", async (UsuarioDAO usuarioDAO, CarnetDigitalContext db) =>
             {
                 // Validar el objeto UsuarioDAO
@@ -75,7 +74,6 @@ namespace CarnetDigital.Users
 
                 if (!isValid)
                 {
-                    // Si hay errores de validación, devolverlos en la respuesta
                     var response = new BusinessLogicResponse
                     {
                         StatusCode = 400,
@@ -104,9 +102,44 @@ namespace CarnetDigital.Users
                     NombreCompleto = usuarioDAO.NombreCompleto,
                     Contrasena = HashPassword(usuarioDAO.Contrasena),
                     TipoUsuarioId = GetTipoUsuarioId(usuarioDAO.Email, usuarioDAO.TipoUsuarioid, db),
-                    Estado = 1,
-                    // Si tienes que mapear más propiedades, hazlo aquí
+                    Estado = 1
                 };
+
+                // Agregar Teléfonos
+                foreach (var telefono in usuarioDAO.TelefonoUsuario)
+                {
+                    usuario.TelefonoUsuario.Add(new TelefonoUsuario
+                    {
+                        Email = telefono.Email,
+                        Telefono = telefono.Telefono
+                    });
+                }
+
+                // Agregar Carreras
+                if (usuarioDAO.TipoUsuarioid == 2)
+                {
+                    foreach (var carrera in usuarioDAO.Carrera)
+                    {
+                        var carreraEntity = await db.Carrera.FindAsync(carrera.CarreraId);
+                        if (carreraEntity != null)
+                        {
+                            usuario.Carrera.Add(carreraEntity);
+                        }
+                    }
+                }
+
+                // Agregar Áreas
+                if (usuarioDAO.TipoUsuarioid == 1)
+                {
+                    foreach (var area in usuarioDAO.Area)
+                    {
+                        var areaEntity = await db.Area.FindAsync(area.AreaId);
+                        if (areaEntity != null)
+                        {
+                            usuario.Area.Add(areaEntity);
+                        }
+                    }
+                }
 
                 // Agregar usuario a la base de datos y guardar cambios
                 db.Usuario.Add(usuario);
@@ -121,8 +154,73 @@ namespace CarnetDigital.Users
 
                 return Results.Created($"/api/Usuario/{usuario.Email}", createdResponse);
             })
-                .WithName("CreateUsuario")
-                .WithOpenApi();
+            .WithName("CreateUsuario")
+            .WithOpenApi();
+
+
+            //group.MapPost("/", async (UsuarioDAO usuarioDAO, CarnetDigitalContext db) =>
+            //{
+            //    // Validar el objeto UsuarioDAO
+            //    var validationResults = new List<ValidationResult>();
+            //    var validationContext = new ValidationContext(usuarioDAO);
+            //    bool isValid = Validator.TryValidateObject(usuarioDAO, validationContext, validationResults, true);
+
+            //    // Validar dominios y tipos de usuario
+            //    isValid = isValid && ValidarDominioYTipoUsuario(usuarioDAO, validationResults);
+
+            //    // Validar asociaciones según tipo de usuario
+            //    isValid = isValid && ValidarAsociaciones(usuarioDAO, validationResults);
+
+            //    if (!isValid)
+            //    {
+            //        // Si hay errores de validación, devolverlos en la respuesta
+            //        var response = new BusinessLogicResponse
+            //        {
+            //            StatusCode = 400,
+            //            Message = "Errores de validación",
+            //            ResponseObject = validationResults
+            //        };
+            //        return Results.BadRequest(response);
+            //    }
+
+            //    if (db.Usuario.Any(u => u.Email == usuarioDAO.Email))
+            //    {
+            //        var response = new BusinessLogicResponse
+            //        {
+            //            StatusCode = 409, // Conflict
+            //            Message = "El correo electrónico ya está en uso"
+            //        };
+            //        return Results.Conflict(response);
+            //    }
+
+            //    // Crear objeto Usuario a partir de UsuarioDAO después de las validaciones
+            //    var usuario = new Usuario
+            //    {
+            //        Email = usuarioDAO.Email,
+            //        TipoIdentificacionId = usuarioDAO.TipoIdentificacionid,
+            //        Identificacion = usuarioDAO.Identificacion,
+            //        NombreCompleto = usuarioDAO.NombreCompleto,
+            //        Contrasena = HashPassword(usuarioDAO.Contrasena),
+            //        TipoUsuarioId = GetTipoUsuarioId(usuarioDAO.Email, usuarioDAO.TipoUsuarioid, db),
+            //        Estado = 1,
+            //        // Si tienes que mapear más propiedades, hazlo aquí
+            //    };
+
+            //    // Agregar usuario a la base de datos y guardar cambios
+            //    db.Usuario.Add(usuario);
+            //    await db.SaveChangesAsync();
+
+            //    var createdResponse = new BusinessLogicResponse
+            //    {
+            //        StatusCode = 201,
+            //        Message = "Usuario creado exitosamente",
+            //        ResponseObject = usuario
+            //    };
+
+            //    return Results.Created($"/api/Usuario/{usuario.Email}", createdResponse);
+            //})
+            //    .WithName("CreateUsuario")
+            //    .WithOpenApi();
 
             group.MapPut("/{email}", async (string email, UsuarioDAO usuarioDAO, CarnetDigitalContext db) =>
             {

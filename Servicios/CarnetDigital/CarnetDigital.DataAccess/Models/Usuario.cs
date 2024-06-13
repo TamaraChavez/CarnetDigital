@@ -5,7 +5,6 @@ namespace CarnetDigital.DataAccess.Models;
 
 public class Usuario
 {
-
     public string Email { get; set; } = null!;
     public byte TipoIdentificacionId { get; set; }
     public string Identificacion { get; set; } = null!;
@@ -15,7 +14,7 @@ public class Usuario
     public byte TipoUsuarioId { get; set; }
     public string? Fiotografia { get; set; }
 
-    //public virtual ICollection<RefreshToken> RefreshToken { get; set; } = new List<RefreshToken>();
+    public virtual ICollection<RefreshToken> RefreshToken { get; set; } = new List<RefreshToken>();
     public virtual ICollection<TelefonoUsuario> TelefonoUsuario { get; set; } = new List<TelefonoUsuario>();
     public virtual TipoIdentificacion TipoIdentificacion { get; set; } = null!;
     public virtual TipoUsuario TipoUsuario { get; set; } = null!;

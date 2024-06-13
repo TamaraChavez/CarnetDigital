@@ -16,28 +16,31 @@ public static class FotografiaEndpoints
 
         // Actualizar Foto con validación
         group.MapPatch("/{email}", async Task<BusinessLogicResponse> (
-            string email,
-            [FromBody] FotografiaDAO fotografiaDAO,
-            CarnetDigitalDbContext db) =>
-        {
-            if (!ValidationHelper.Validate(fotografiaDAO, out var validationResults))
-            {
-                return new BusinessLogicResponse(400, string.Join("; ", validationResults.Select(r => r.ErrorMessage)));
-            }
+    string email,
+    [FromBody] FotografiaDAO fotografiaDAO,
+    CarnetDigitalDbContext db) =>
+{
+    // Validar el modelo FotografiaDAO
+    if (!ValidationHelper.Validate(fotografiaDAO, out var validationResults))
+    {
+        return new BusinessLogicResponse(400, string.Join("; ", validationResults.Select(r => r.ErrorMessage)));
+    }
 
-            var usuario = await db.Usuario.FirstOrDefaultAsync(u => u.Email == email);
-            if (usuario == null)
-            {
-                return new BusinessLogicResponse(404, "Usuario no encontrado.");
-            }
+    // Verificar si el usuario existe
+    var usuario = await db.Usuario.FirstOrDefaultAsync(u => u.Email == fotografiaDAO.Email);
+    if (usuario == null)
+    {
+        return new BusinessLogicResponse(404, "Usuario no encontrado.");
+    }
 
-            usuario.Fotografia = fotografiaDAO.Fotografia;
-            await db.SaveChangesAsync();
+    // Actualizar la fotografía del usuario
+    usuario.Fotografia = fotografiaDAO.Fotografia;
+    await db.SaveChangesAsync();
 
-            return new BusinessLogicResponse(200, "Fotografía actualizada exitosamente.");
-        })
-        .WithName("ModificarFotografia")
-        .WithOpenApi();
+    return new BusinessLogicResponse(200, "Fotografía actualizada exitosamente.");
+})
+.WithName("ModificarFotografia")
+.WithOpenApi();
 
         // Eliminar Foto
         group.MapDelete("/{email}", async Task<BusinessLogicResponse> (
@@ -74,33 +77,33 @@ public static class FotografiaEndpoints
         .WithName("GetUsuarioFotografia")
         .WithOpenApi();
 
-        group.MapPost("/", async Task<BusinessLogicResponse> (
-         [FromBody] FotografiaDAO fotografiaDAO,
-         CarnetDigitalDbContext db) =>
-        {
-            if (!ValidationHelper.Validate(fotografiaDAO, out var validationResults))
-            {
-                return new BusinessLogicResponse(400, string.Join("; ", validationResults.Select(r => r.ErrorMessage)));
-            }
+       // group.MapPost("/", async Task<BusinessLogicResponse> (
+       //  [FromBody] FotografiaDAO fotografiaDAO,
+       //  CarnetDigitalDbContext db) =>
+       // {
+       //     if (!ValidationHelper.Validate(fotografiaDAO, out var validationResults))
+       //     {
+       //         return new BusinessLogicResponse(400, string.Join("; ", validationResults.Select(r => r.ErrorMessage)));
+       //     }
 
-            var usuario = await db.Usuario.FirstOrDefaultAsync(u => u.Email == fotografiaDAO.Email);
-            if (usuario == null)
-            {
-                return new BusinessLogicResponse(404, "Usuario no encontrado.");
-            }
+       //     var usuario = await db.Usuario.FirstOrDefaultAsync(u => u.Email == fotografiaDAO.Email);
+       //     if (usuario == null)
+       //     {
+       //         return new BusinessLogicResponse(404, "Usuario no encontrado.");
+       //     }
 
-            if (!string.IsNullOrEmpty(usuario.Fotografia))
-            {
-                return new BusinessLogicResponse(400, "El usuario ya tiene una fotografía.");
-            }
+       //     if (!string.IsNullOrEmpty(usuario.Fotografia))
+       //     {
+       //         return new BusinessLogicResponse(400, "El usuario ya tiene una fotografía.");
+       //     }
 
-            usuario.Fotografia = fotografiaDAO.Fotografia;
-            await db.SaveChangesAsync();
+       //     usuario.Fotografia = fotografiaDAO.Fotografia;
+       //     await db.SaveChangesAsync();
 
-            return new BusinessLogicResponse(201, "Fotografía agregada exitosamente.");
-        })
-       .WithName("AgregarFotografia")
-       .WithOpenApi();
+       //     return new BusinessLogicResponse(201, "Fotografía agregada exitosamente.");
+       // })
+       //.WithName("AgregarFotografia")
+       //.WithOpenApi();
 
 
 

@@ -1,6 +1,5 @@
 using CarnetDigital.DataAccess.Models;
 using Microsoft.EntityFrameworkCore;
-using CarnetDigital.
 
 
 
@@ -27,5 +26,5 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-app.MapFotografiaEndpounts;
+
 app.Run();

@@ -1,6 +1,7 @@
 ﻿
 using Microsoft.EntityFrameworkCore;
 using CarnetDigital.Pictures;
+using CarnetDigital.DataAccess.Models;
 
 
 
@@ -10,6 +11,14 @@ var builder = WebApplication.CreateBuilder(args);
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+
+builder.Services.AddDbContext<CarnetDigitalDbContext>(options =>
+{
+    options.UseSqlServer("name=ConnectionStrings:DefaultConnection");
+
+});
+
 
 var app = builder.Build();
 

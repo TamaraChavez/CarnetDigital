@@ -3,27 +3,27 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.8.34330.188
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CarnetDigital.Login", "CarnetDigital.Login\CarnetDigital.Login.csproj", "{6F77A874-993F-4EDE-A589-E21FA29F0B7B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CarnetDigital.Login", "CarnetDigital.Login\CarnetDigital.Login.csproj", "{6F77A874-993F-4EDE-A589-E21FA29F0B7B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CarnetDigital.Catalogs", "CarnetDigital.Catalogs\CarnetDigital.Catalogs.csproj", "{D8CF7D34-5C20-4409-9BD6-A65064CB6C28}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CarnetDigital.Catalogs", "CarnetDigital.Catalogs\CarnetDigital.Catalogs.csproj", "{D8CF7D34-5C20-4409-9BD6-A65064CB6C28}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CarnetDigital.Users", "CarnetDigital.Users\CarnetDigital.Users.csproj", "{50823B25-E1C9-441F-9FB3-CD41BEE561AA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CarnetDigital.Users", "CarnetDigital.Users\CarnetDigital.Users.csproj", "{50823B25-E1C9-441F-9FB3-CD41BEE561AA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CarnetDigital.Pictures", "CarnetDigital.Pictures\CarnetDigital.Pictures.csproj", "{DB02C1C4-90EE-4E2D-91D0-F1786596C735}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CarnetDigital.Pictures", "CarnetDigital.Pictures\CarnetDigital.Pictures.csproj", "{DB02C1C4-90EE-4E2D-91D0-F1786596C735}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CarnetDigital.QRCode", "CarnetDigital.QRCode\CarnetDigital.QRCode.csproj", "{4C2A4641-7411-4F5C-805F-CDE255410D4F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CarnetDigital.QRCode", "CarnetDigital.QRCode\CarnetDigital.QRCode.csproj", "{4C2A4641-7411-4F5C-805F-CDE255410D4F}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Services", "Services", "{6DBD0AA0-6677-4A0A-B745-97D8A4E7408C}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Common", "Common", "{801E5B17-C5E3-4E7F-BAA3-EB7A2A501DFF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CarnetDigital.DataAccess", "CarnetDigital.DataAccess\CarnetDigital.DataAccess.csproj", "{F4320D44-C387-4544-A2CA-019148D1A68C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CarnetDigital.DataAccess", "CarnetDigital.DataAccess\CarnetDigital.DataAccess.csproj", "{F4320D44-C387-4544-A2CA-019148D1A68C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CarnetDigital.BusinessLogic", "CarnetDigital.BusinessLogic\CarnetDigital.BusinessLogic.csproj", "{31F0307A-6A15-49F6-91DF-B105C0C8CB6E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CarnetDigital.BusinessLogic", "CarnetDigital.BusinessLogic\CarnetDigital.BusinessLogic.csproj", "{31F0307A-6A15-49F6-91DF-B105C0C8CB6E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CarnetDigital.Models", "CarnetDigital.Models\CarnetDigital.Models.csproj", "{EB2A3475-A38B-495E-9C1A-619D48F5DE3C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CarnetDigital.Models", "CarnetDigital.Models\CarnetDigital.Models.csproj", "{EB2A3475-A38B-495E-9C1A-619D48F5DE3C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CarnetDigital.Abstract", "CarnetDigital.Abstract\CarnetDigital.Abstract.csproj", "{33D2A653-B43D-43FE-A88C-AA994C4D869B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CarnetDigital.Abstract", "CarnetDigital.Abstract\CarnetDigital.Abstract.csproj", "{33D2A653-B43D-43FE-A88C-AA994C4D869B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

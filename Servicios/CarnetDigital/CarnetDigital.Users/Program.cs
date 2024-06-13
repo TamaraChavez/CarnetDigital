@@ -1,5 +1,6 @@
 using CarnetDigital.DataAccess.Models;
 using Microsoft.EntityFrameworkCore;
+using CarnetDigital.Users;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -24,6 +25,8 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+app.MapUsuarioEndpoints();
 
 //var summaries = new[]
 //{

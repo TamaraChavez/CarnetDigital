@@ -1,7 +1,7 @@
 ﻿
 using Microsoft.EntityFrameworkCore;
-using CarnetDigital.Pictures;
-using CarnetDigital.DataAccess.Models;
+
+
 
 
 
@@ -13,11 +13,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 
-builder.Services.AddDbContext<CarnetDigitalDbContext>(options =>
-{
-    options.UseSqlServer("name=ConnectionStrings:DefaultConnection");
 
-});
 
 
 var app = builder.Build();
@@ -32,7 +28,6 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
-app.MapUsuarioEndpoints();
 
 
 

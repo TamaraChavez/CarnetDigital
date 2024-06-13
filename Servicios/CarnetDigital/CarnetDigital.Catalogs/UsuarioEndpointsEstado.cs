@@ -12,88 +12,107 @@ public static class UsuarioEndpointsEstado
     {
         var group = routes.MapGroup("/api/Usuario").WithTags(nameof(Usuario));
 
-        group.MapGet("/", async (CarnetDigitalContext db) =>
-        {
-            return await db.Usuario.ToListAsync();
-        })
-        .WithName("GetAllUsuarios")
-        .WithOpenApi();
+           group.MapPatch("/estado", async Task<IResult> (EstadoDAO usuario, CarnetDigitalContext db) =>
 
-        group.MapGet("/{id}", async Task<Results<Ok<Usuario>, NotFound>> (string email, CarnetDigitalContext db) =>
-        {
-            return await db.Usuario.AsNoTracking()
-                .FirstOrDefaultAsync(model => model.Email == email)
-                is Usuario model
-                    ? TypedResults.Ok(model)
-                    : TypedResults.NotFound();
-        })
-        .WithName("GetUsuarioById")
-        .WithOpenApi();
-
-        group.MapPut("/{id}", async Task<Results<Ok, NotFound>> (string email, Usuario usuario, CarnetDigitalContext db) =>
-        {
-            var affected = await db.Usuario
-                .Where(model => model.Email == email)
-                .ExecuteUpdateAsync(setters => setters
-                    .SetProperty(m => m.Email, usuario.Email)
-                    .SetProperty(m => m.Estado, usuario.Estado)
-
-                    );
-            return affected == 1 ? TypedResults.Ok() : TypedResults.NotFound();
-        })
-        .WithName("UpdateUsuario")
-        .WithOpenApi();
-
-        group.MapPatch("/usuarios/estado", async Task<Results<Ok, NotFound, BadRequest>> (string email, EstadoDAO usuario, CarnetDigitalContext db) =>
-        {
-            // Validar el objeto UsuarioDAO
-            var validationResults = new List<ValidationResult>();
-            var validationContext = new ValidationContext(usuario);
-            bool isValid = Validator.TryValidateObject(usuario, validationContext, validationResults, true);
-
-
-            if (!isValid)
             {
-                // Si hay errores de validación, devolverlos en la respuesta
-                var response = new BusinessLogicResponse
+                // Validar el objeto EstadoDAO
+                var validationResults = new List<ValidationResult>();
+                var validationContext = new ValidationContext(usuario);
+                bool isValid = Validator.TryValidateObject(usuario, validationContext, validationResults, true);
+
+                if (!isValid)
                 {
-                    StatusCode = 400,
-                    Message = "Errores de validación",
-                    ResponseObject = validationResults
-                };
-                return Results.BadRequest(response);
-            }
+                    // Si hay errores de validación, devolverlos en la respuesta
+                    var response = new BusinessLogicResponse
+                    {
+                        StatusCode = 400,
+                        Message = "Errores de validación",
+                        ResponseObject = validationResults
+                    };
+                    return Results.BadRequest(response);
+                }
 
-            // Obtener el usuario existente por correo electrónico
-            var existingUser = await db.Usuario.FirstOrDefaultAsync(u => u.Email == email);
-            if (existingUser == null)
-            {
-                // Si el usuario no existe, devolver un error 404 (Not Found)
-                var notFoundResponse = new BusinessLogicResponse
+                // Obtener el usuario existente por correo electrónico
+                var existingUser = await db.Usuario.FirstOrDefaultAsync(u => u.Email == usuario.Identificador);
+                if (existingUser == null)
                 {
-                    StatusCode = 404,
-                    Message = "Usuario no encontrado"
+                    // Si el usuario no existe, devolver un error 404 (Not Found)
+                    var notFoundResponse = new BusinessLogicResponse
+                    {
+                        StatusCode = 404,
+                        Message = "Usuario no encontrado"
+                    };
+                    return Results.NotFound(notFoundResponse);
+                }
+
+                // Modificar el estado del usuario
+                existingUser.Estado = usuario.Estado;
+
+                // Guardar los cambios en la base de datos
+                await db.SaveChangesAsync();
+
+                var updatedResponse = new BusinessLogicResponse
+                {
+                    StatusCode = 200,
+                    Message = "Usuario actualizado exitosamente",
+                    ResponseObject = existingUser
                 };
-                return Results.NotFound(notFoundResponse);
-            }
 
-            // Modificar el estado del usuario
-            existingUser.Estado = usuario.EstadoID;
-
-            // Guardar los cambios en la base de datos
-            await db.SaveChangesAsync();
-
-            var updatedResponse = new BusinessLogicResponse
-            {
-                StatusCode = 200,
-                Message = "Usuario actualizado exitosamente",
-                ResponseObject = existingUser
-            };
-
-            return Results.Ok(updatedResponse);
-        })
+                return Results.Ok(updatedResponse);
+            })
             .WithName("UpdateUsuarioEstado")
             .WithOpenApi();
+
+        //group.MapPatch("/estado", async (string Email, EstadoDAO usuario, CarnetDigitalContext db) =>
+        //{
+        //    // Validar el objeto UsuarioDAO
+        //    var validationResults = new List<ValidationResult>();
+        //    var validationContext = new ValidationContext(usuario);
+        //    bool isValid = Validator.TryValidateObject(usuario, validationContext, validationResults, true);
+
+
+        //    if (!isValid)
+        //    {
+        //        // Si hay errores de validación, devolverlos en la respuesta
+        //        var response = new BusinessLogicResponse
+        //        {
+        //            StatusCode = 400,
+        //            Message = "Errores de validación",
+        //            ResponseObject = validationResults
+        //        };
+        //        return Results.BadRequest(response);
+        //    }
+
+        //    // Obtener el usuario existente por correo electrónico
+        //    var existingUser = await db.Usuario.FirstOrDefaultAsync(u => u.Email == Email);
+        //    if (existingUser == null)
+        //    {
+        //        // Si el usuario no existe, devolver un error 404 (Not Found)
+        //        var notFoundResponse = new BusinessLogicResponse
+        //        {
+        //            StatusCode = 404,
+        //            Message = "Usuario no encontrado"
+        //        };
+        //        return Results.NotFound(notFoundResponse);
+        //    }
+
+        //    // Modificar el estado del usuario
+        //    existingUser.Estado = usuario.Estado;
+
+        //    // Guardar los cambios en la base de datos
+        //    await db.SaveChangesAsync();
+
+        //    var updatedResponse = new BusinessLogicResponse
+        //    {
+        //        StatusCode = 200,
+        //        Message = "Usuario actualizado exitosamente",
+        //        ResponseObject = existingUser
+        //    };
+
+        //    return Results.Ok(updatedResponse);
+        //})
+        //    .WithName("UpdateUsuarioEstado")
+        //    .WithOpenApi();
 
 
     }

@@ -28,18 +28,18 @@ public static class EstadosEndpoints
         //.WithName("GetEstadosById")
         //.WithOpenApi();
 
-        group.MapPut("/{id}", async Task<Results<Ok, NotFound>> (byte estadoid, Estados estados, CarnetDigitalContext db) =>
-        {
-            var affected = await db.Estados
-                .Where(model => model.EstadoId == estadoid)
-                .ExecuteUpdateAsync(setters => setters
-                    .SetProperty(m => m.EstadoId, estados.EstadoId)
-                    .SetProperty(m => m.Descripcion, estados.Descripcion)
-                    );
-            return affected == 1 ? TypedResults.Ok() : TypedResults.NotFound();
-        })
-        .WithName("UpdateEstados")
-        .WithOpenApi();
+        //group.MapPut("/{id}", async Task<Results<Ok, NotFound>> (byte estadoid, Estados estados, CarnetDigitalContext db) =>
+        //{
+        //    var affected = await db.Estados
+        //        .Where(model => model.EstadoId == estadoid)
+        //        .ExecuteUpdateAsync(setters => setters
+        //            .SetProperty(m => m.EstadoId, estados.EstadoId)
+        //            .SetProperty(m => m.Descripcion, estados.Descripcion)
+        //            );
+        //    return affected == 1 ? TypedResults.Ok() : TypedResults.NotFound();
+        //})
+        //.WithName("UpdateEstados")
+        //.WithOpenApi();
 
         //group.MapPost("/", async (Estados estados, CarnetDigitalContext db) =>
         //{

@@ -9,11 +9,16 @@ namespace CarnetDigital.Catalogs
 {
     public class EstadoDAO
     {
-        [NoEmptyOrWhiteSpaceAttributeEmail( ErrorMessage = "")]
-        public int Email { get; set; }
+        [NoEmptyOrWhiteSpaceAttributeEmail(ErrorMessage = "")]
+        public string Identificador { get; set; } = null!;
 
-        [NoEmptyOrWhiteSpaceAttribute(ErrorMessage = "")]
-        public byte EstadoID { get; set; } 
+
+
+        [Required(ErrorMessage = "El código del estado no puede estar vacío ni contener solo espacios en blanco.")]
+        //[NoEmptyOrWhiteSpaceAttribute(ErrorMessage = "")]
+        public byte Estado { get; set; }
+
+
 
         public class NoEmptyOrWhiteSpaceAttributeEmail : ValidationAttribute
         {
@@ -30,20 +35,20 @@ namespace CarnetDigital.Catalogs
             }
         }
 
-        public class NoEmptyOrWhiteSpaceAttribute : ValidationAttribute
-        {
-            protected override ValidationResult? IsValid(object? value, ValidationContext validationContext)
-            {
-                if (value is string stringValue)
-                {
-                    if (string.IsNullOrWhiteSpace(stringValue))
-                    {
-                        return new ValidationResult("El código del estado no puede estar vacío ni contener solo espacios en blanco.");
-                    }
-                }
-                return ValidationResult.Success;
-            }
-        }
+        //public class NoEmptyOrWhiteSpaceAttribute : ValidationAttribute
+        //{
+        //    protected override ValidationResult? IsValid(object? value, ValidationContext validationContext)
+        //    {
+        //        if (value is string stringValue)
+        //        {
+        //            if (string.IsNullOrWhiteSpace(stringValue))
+        //            {
+        //                return new ValidationResult("El código del estado no puede estar vacío ni contener solo espacios en blanco.");
+        //            }
+        //        }
+        //        return ValidationResult.Success;
+        //    }
+        //}
 
     }
 }

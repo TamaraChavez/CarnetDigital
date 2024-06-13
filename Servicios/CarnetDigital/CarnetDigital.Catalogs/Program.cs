@@ -31,6 +31,5 @@ app.MapEstadosEndpoints();
 
 app.MapUsuarioEndpoints();
 
-
 app.Run();
 

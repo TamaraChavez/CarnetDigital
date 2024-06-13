@@ -14,6 +14,7 @@ public class Usuario
     public byte TipoUsuarioId { get; set; }
     public string? Fiotografia { get; set; }
 
+    //public virtual Estados EstadoNavigation { get; set; } = null!;
     public virtual ICollection<RefreshToken> RefreshToken { get; set; } = new List<RefreshToken>();
     public virtual ICollection<TelefonoUsuario> TelefonoUsuario { get; set; } = new List<TelefonoUsuario>();
     public virtual TipoIdentificacion TipoIdentificacion { get; set; } = null!;
@@ -38,7 +39,6 @@ public class Usuario
 
     //public string? Fiotografia { get; set; }
 
-    ////public virtual Estados EstadoNavigation { get; set; } = null!;
 
     //public virtual ICollection<RefreshToken> RefreshToken { get; set; } = new List<RefreshToken>();
 

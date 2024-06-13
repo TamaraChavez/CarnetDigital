@@ -39,7 +39,7 @@ namespace CarnetDigital.Models
         [Range(1, 3, ErrorMessage = "El tipo de usuario debe ser 1 (Funcionario), 2 (Estudiante) o 3 (Administrador)")]
         public byte TipoUsuarioid { get; set; }
 
-        public int TelefonoUsuario { get; set; }
+        public string TelefonoUsuario { get; set; } = null!;
 
         public string? Fiotografia { get; set; } = null!;
 

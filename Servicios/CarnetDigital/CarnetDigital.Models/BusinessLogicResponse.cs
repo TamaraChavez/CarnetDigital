@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace CarnetDigital.Models
+
 {
     public class BusinessLogicResponse
     {
@@ -13,15 +14,17 @@ namespace CarnetDigital.Models
 
         public object ResponseObject { get; set; } = null!;
 
-        public BusinessLogicResponse() 
-        { 
+        public BusinessLogicResponse()
+        {
+
         }
-        public BusinessLogicResponse( int statusCode, string message)
+
+        public BusinessLogicResponse(int statusCode, string message)
+
         {
             StatusCode = statusCode;
             Message = message;
         }
-
-
     }
 }
+

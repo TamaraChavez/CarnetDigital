@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
-<<<<<<< HEAD
 using System.Text.Json.Serialization;
 
 namespace CarnetDigital.Models
@@ -89,55 +88,6 @@ namespace CarnetDigital.Models
             }
         }
 
-
-
-        //[Required(AllowEmptyStrings = false, ErrorMessage = "El correo electrónico de la persona es requerido")]
-        //public string Email { get; set; } = null!;
-
-        //[Required(ErrorMessage = "El tipo de identificación es requerido")]
-        //[Range(1, 3, ErrorMessage = "El tipo de identificación debe ser 1, 2 o 3")]
-        //public byte TipoIdentificacionid { get; set; }
-
-        //[Required(AllowEmptyStrings = false, ErrorMessage = "La identificación es requerida")]
-        //public string Identificacion { get; set; } = null!;
-
-        ////[Required(AllowEmptyStrings = false, ErrorMessage = "El nombre completo es requerido")]
-        //[NoEmptyOrWhiteSpace(ErrorMessage = "")]
-        //public string NombreCompleto { get; set; } = null!;
-
-        //[Required(AllowEmptyStrings = false, ErrorMessage = "La contraseña es requerida")]
-        //[MinLength(8, ErrorMessage = "La contraseña no puede tener menos de 8 caracteres")]
-        //public string Contrasena { get; set; } = null!;
-
-        //[Required(ErrorMessage = "El tipo de usuario es requerido")]
-        //[Range(1, 3, ErrorMessage = "El tipo de usuario debe ser 1 (Funcionario), 2 (Estudiante) o 3 (Administrador)")]
-        //public byte TipoUsuarioid { get; set; }
-
-        //public int Telefono { get; set; }
-
-        //public string? Fiotografia { get; set; } = null!;
-
-        //[Required(AllowEmptyStrings = false, ErrorMessage = "La carrera es requerida")]
-        //public List<CarreraDAO> Carrera { get; set; } = null!;
-
-        //[Required(AllowEmptyStrings = false, ErrorMessage = "El área es requerida")]
-        //public List<AreaDAO> Area { get; set; } = null!;
-
-
-        //public class NoEmptyOrWhiteSpaceAttribute : ValidationAttribute
-        //{
-        //    protected override ValidationResult? IsValid(object? value, ValidationContext validationContext)
-        //    {
-        //        if (value is string stringValue)
-        //        {
-        //            if (string.IsNullOrWhiteSpace(stringValue))
-        //            {
-        //                return new ValidationResult("El nombre completo no puede estar vacío ni contener solo espacios en blanco.");
-        //            }
-        //        }
-        //        return ValidationResult.Success;
-        //    }
-        //}
     }
 
     public class CarreraDAO
@@ -153,64 +103,4 @@ namespace CarnetDigital.Models
     }
 
 }
-        //public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
-        //{
-        //    var results = new List<ValidationResult>();
-        //    var emailDomain = Email.Split('@').Last();
 
-        //    if (emailDomain == "cuc.cr" && TipoUsuarioid != 2)
-        //    {
-        //        results.Add(new ValidationResult("Si el dominio es cuc.cr, el tipo de usuario debe ser estudiante.", new[] { nameof(Email), nameof(TipoUsuarioid) }));
-        //    }
-        //    else if (emailDomain == "cuc.ac.cr" && (TipoUsuarioid != 1 && TipoUsuarioid != 3))
-        //    {
-        //        results.Add(new ValidationResult("Si el dominio es cuc.ac.cr, el tipo de usuario debe ser funcionario o administrador.", new[] { nameof(Email), nameof(TipoUsuarioid) }));
-        //    }
-
-        //    if (TipoUsuarioid == 2 && (Carrera == null || !Carrera.Any()))
-        //    {
-        //        results.Add(new ValidationResult("Los estudiantes deben tener al menos una carrera asociada.", new[] { nameof(Carrera) }));
-        //    }
-        //    if (TipoUsuarioid == 1 && (Area == null || !Area.Any()))
-        //    {
-        //        results.Add(new ValidationResult("Los funcionarios deben tener al menos un área asociada.", new[] { nameof(Area) }));
-        //    }
-
-        //    return results;
-        //}
-
-=======
-using System.Text;
-using System.Threading.Tasks;
-
-namespace CarnetDigital.Models
-{
-    public class UsuarioDAO
-    {
-        [Required(AllowEmptyStrings = false,ErrorMessage = "Email de la persona requrido")]
-        public string Email { get; set; } = null!;
-
-        [Required(AllowEmptyStrings = false, ErrorMessage = "tipo de ID de la persona requrido")]
-        public byte TipoIdentificacionId { get; set; }
-
-        [Required(AllowEmptyStrings = false, ErrorMessage = "ID de la perosna requrido")]
-        public string Identificacion { get; set; } = null!;
-
-        [Required(AllowEmptyStrings = false, ErrorMessage = "Nombre completo de la persona requrido")]
-        public string NombreCompleto { get; set; } = null!;
-
-        [Required(AllowEmptyStrings = false, ErrorMessage = "Contrase\u00F1a de la persona requerida")]
-        public string Contrasena { get; set; } = null!;
-
-        [Required(AllowEmptyStrings = false, ErrorMessage = "Estado de la persona requrido")]
-        public byte Estado { get; set; }
-
-        [Required(AllowEmptyStrings = false, ErrorMessage = "Por favor indique tipo de usarios")]
-        public byte TipoUsuarioId { get; set; }
-
-
-       
-    }
-
-}
->>>>>>> d95f8b2937232dd174c02909fb7b342e713fcf73

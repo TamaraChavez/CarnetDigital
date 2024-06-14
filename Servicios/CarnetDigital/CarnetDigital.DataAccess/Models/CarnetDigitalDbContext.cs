@@ -32,7 +32,9 @@ public partial class CarnetDigitalDbContext : DbContext
     public virtual DbSet<Usuario> Usuario { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+
         => optionsBuilder.UseSqlServer("Server=DESKTOP-R9E1L2M\\SQLINSTANCE1;Database=CarnetDigitalDB; User id=sa; password=*Tami123; Encrypt=False;");
+
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -79,9 +81,9 @@ public partial class CarnetDigitalDbContext : DbContext
 
         modelBuilder.Entity<RefreshToken>(entity =>
         {
-            entity.Property(e => e.RefreshTokenId)
-                .ValueGeneratedNever()
-                .HasColumnName("RefreshTokenID");
+
+            entity.Property(e => e.RefreshTokenId).HasColumnName("RefreshTokenID");
+
             entity.Property(e => e.Email)
                 .HasMaxLength(100)
                 .IsUnicode(false);
@@ -114,7 +116,11 @@ public partial class CarnetDigitalDbContext : DbContext
         {
             entity.HasKey(e => e.TipoIdentificacionId).HasName("PK__TiposIde__C774CA54DDC07D3B");
 
-            entity.Property(e => e.TipoIdentificacionId).HasColumnName("TipoIdentificacionID");
+
+            entity.Property(e => e.TipoIdentificacionId)
+                .ValueGeneratedOnAdd()
+                .HasColumnName("TipoIdentificacionID");
+
             entity.Property(e => e.Nombre)
                 .HasMaxLength(50)
                 .IsUnicode(false);
@@ -136,7 +142,9 @@ public partial class CarnetDigitalDbContext : DbContext
         {
             entity.HasKey(e => e.Email).HasName("PK__Usuarios__A9D105356EEA241C");
 
+
             entity.HasIndex(e => e.Identificacion, "IX_Usuarios").IsUnique();
+
 
             entity.Property(e => e.Email)
                 .HasMaxLength(100)
@@ -144,7 +152,9 @@ public partial class CarnetDigitalDbContext : DbContext
             entity.Property(e => e.Contrasena)
                 .HasMaxLength(1000)
                 .IsUnicode(false);
+
             entity.Property(e => e.Fotografia).IsUnicode(false);
+
             entity.Property(e => e.Identificacion)
                 .HasMaxLength(50)
                 .IsUnicode(false);

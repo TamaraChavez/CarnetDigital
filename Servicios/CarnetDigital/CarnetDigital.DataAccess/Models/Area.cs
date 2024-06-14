@@ -12,4 +12,5 @@ public partial class Area
 
     public virtual ICollection<Usuario> Email { get; set; } = new List<Usuario>();
 
+
 }

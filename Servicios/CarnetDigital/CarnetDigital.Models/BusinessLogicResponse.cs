@@ -11,20 +11,23 @@ namespace CarnetDigital.Models
     {
         public int StatusCode { get; set; } = 200;
         public string Message { get; set; } = null!;
+        public object? Data { get; set; }
 
-        public object ResponseObject { get; set; } = null!;
-
-        public BusinessLogicResponse()
-        {
-
-        }
+        public BusinessLogicResponse() { }
 
         public BusinessLogicResponse(int statusCode, string message)
-
         {
             StatusCode = statusCode;
             Message = message;
         }
+
+        public BusinessLogicResponse(int statusCode, string message, object? data)
+        {
+            StatusCode = statusCode;
+            Message = message;
+            Data = data;
+        }
+
     }
 }
 

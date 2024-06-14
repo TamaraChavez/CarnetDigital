@@ -15,7 +15,7 @@ public static class UsuarioEndpointsCambioEstado
     public static void MapUsuarioEndpoints (this IEndpointRouteBuilder routes)
     {
         var group = routes.MapGroup("/api/Usuario").WithTags(nameof(Usuario));
-        group.MapPatch("/estado", async Task<IResult> (EstadoDAO usuario, CarnetDigitalContext db) =>
+        group.MapPatch("/estado", async Task<IResult> (EstadoDAO usuario, CarnetDigitalDbContext db) =>
 
         {
             // Validar el objeto EstadoDAO

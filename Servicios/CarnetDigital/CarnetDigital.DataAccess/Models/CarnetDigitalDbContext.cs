@@ -4,13 +4,13 @@ using Microsoft.EntityFrameworkCore;
 
 namespace CarnetDigital.DataAccess.Models;
 
-public partial class CarnetDigitalContext : DbContext
+public partial class CarnetDigitalDbContext : DbContext
 {
-    public CarnetDigitalContext()
+    public CarnetDigitalDbContext()
     {
     }
 
-    public CarnetDigitalContext(DbContextOptions<CarnetDigitalContext> options)
+    public CarnetDigitalDbContext(DbContextOptions<CarnetDigitalDbContext> options)
         : base(options)
     {
     }

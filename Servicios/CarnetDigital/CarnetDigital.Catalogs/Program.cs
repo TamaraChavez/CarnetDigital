@@ -10,7 +10,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 //Inyeccion de dependencias
-builder.Services.AddDbContext<CarnetDigitalContext>(options =>
+builder.Services.AddDbContext<CarnetDigitalDbContext>(options =>
 {
     options.UseSqlServer("name=ConnectionStrings:DefaultConnection");
 });
@@ -27,7 +27,7 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
-app.MapEstadosEndpoints();
+app.MapUsuarioEndpointsCambioEstado();
 
 app.MapUsuarioEndpoints();
 

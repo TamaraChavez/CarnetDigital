@@ -16,4 +16,5 @@ public partial class Carrera
     public int Telefono { get; set; }
 
     public virtual ICollection<Usuario> EmailNavigation { get; set; } = new List<Usuario>();
+
 }

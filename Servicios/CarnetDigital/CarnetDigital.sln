@@ -14,6 +14,9 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CarnetDigital.QRCode", "CarnetDigital.QRCode\CarnetDigital.QRCode.csproj", "{4C2A4641-7411-4F5C-805F-CDE255410D4F}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Services", "Services", "{6DBD0AA0-6677-4A0A-B745-97D8A4E7408C}"
+	ProjectSection(SolutionItems) = preProject
+		CarnetDigital.Models\UsuarioDAO.cs = CarnetDigital.Models\UsuarioDAO.cs
+	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Common", "Common", "{801E5B17-C5E3-4E7F-BAA3-EB7A2A501DFF}"
 EndProject

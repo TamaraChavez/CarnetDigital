@@ -3,6 +3,7 @@ using System.Collections.Generic;
 
 namespace CarnetDigital.DataAccess.Models;
 
+
 public partial class Usuario
 {
     public string Email { get; set; } = null!;
@@ -19,9 +20,7 @@ public partial class Usuario
 
     public byte TipoUsuarioId { get; set; }
 
-
     public string? Fotografia { get; set; }
-
 
     public virtual Estados EstadoNavigation { get; set; } = null!;
 
@@ -33,7 +32,9 @@ public partial class Usuario
 
     public virtual TipoUsuario TipoUsuario { get; set; } = null!;
 
+
     public virtual ICollection<Area> Area { get; set; } = new List<Area>();
 
     public virtual ICollection<Carrera> Carrera { get; set; } = new List<Carrera>();
 }
+

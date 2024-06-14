@@ -9,9 +9,11 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+
 builder.Services.AddDbContext<CarnetDigitalDbContext>(options =>
 {
     options.UseSqlServer("name=ConnectionStrings:DefaultConnection");
+
 
 });
 
@@ -24,10 +26,15 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+
 app.UseHttpsRedirection();
+
 
 app.MapTipoIdentificacionEndpoints();
 
+app.MapUsuarioEndpointsCambioEstado();
+
+app.MapUsuarioEndpoints();
 
 
 app.Run();

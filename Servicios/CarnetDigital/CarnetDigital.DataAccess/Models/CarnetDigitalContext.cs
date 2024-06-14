@@ -4,13 +4,13 @@ using Microsoft.EntityFrameworkCore;
 
 namespace CarnetDigital.DataAccess.Models;
 
-public partial class CarnetDigitalDbContext : DbContext
+public partial class CarnetDigitalContext : DbContext
 {
-    public CarnetDigitalDbContext()
+    public CarnetDigitalContext()
     {
     }
 
-    public CarnetDigitalDbContext(DbContextOptions<CarnetDigitalDbContext> options)
+    public CarnetDigitalContext(DbContextOptions<CarnetDigitalContext> options)
         : base(options)
     {
     }
@@ -19,9 +19,9 @@ public partial class CarnetDigitalDbContext : DbContext
 
     public virtual DbSet<Carrera> Carrera { get; set; }
 
-    public virtual DbSet<Estados> Estados { get; set; }
+    //public virtual DbSet<Estados> Estados { get; set; }
 
-    public virtual DbSet<RefreshToken> RefreshToken { get; set; }
+    //public virtual DbSet<RefreshToken> RefreshToken { get; set; }
 
     public virtual DbSet<TelefonoUsuario> TelefonoUsuario { get; set; }
 
@@ -32,9 +32,8 @@ public partial class CarnetDigitalDbContext : DbContext
     public virtual DbSet<Usuario> Usuario { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-
         //=> optionsBuilder.UseSqlServer("Name=DefaultConnection");
-        => optionsBuilder.UseSqlServer("Server=DESKTOP-R9E1L2M\\SQLINSTANCE1;Database=CarnetDigitalDB;User Id=sa;Password=*Tami123;Encrypt=False");
+        => optionsBuilder.UseSqlServer("Server=ALI\\MSSQLSERVER1;Database=CarnetDigital;User Id=sa;Password=123;Encrypt=False;");
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -69,35 +68,32 @@ public partial class CarnetDigitalDbContext : DbContext
                 .IsUnicode(false);
         });
 
-        modelBuilder.Entity<Estados>(entity =>
-        {
-            entity.HasKey(e => e.EstadoId);
+        //modelBuilder.Entity<Estados>(entity =>
+        //{
+        //    entity.HasKey(e => e.EstadoId);
 
-            entity.Property(e => e.EstadoId).HasColumnName("EstadoID");
-            entity.Property(e => e.Descripcion)
-                .HasMaxLength(20)
-                .IsUnicode(false);
-        });
+        //    entity.Property(e => e.EstadoId).HasColumnName("EstadoID");
+        //    entity.Property(e => e.Descripcion)
+        //        .HasMaxLength(20)
+        //        .IsUnicode(false);
+        //});
 
-        modelBuilder.Entity<RefreshToken>(entity =>
-        {
+        //modelBuilder.Entity<RefreshToken>(entity =>
+        //{
+        //    entity.Property(e => e.RefreshTokenId).HasColumnName("RefreshTokenID");
+        //    entity.Property(e => e.Email)
+        //        .HasMaxLength(100)
+        //        .IsUnicode(false);
+        //    entity.Property(e => e.ExpirationDate).HasColumnType("datetime");
+        //    entity.Property(e => e.RefreshTokenValue)
+        //        .HasMaxLength(500)
+        //        .IsUnicode(false);
 
-
-            entity.Property(e => e.RefreshTokenId).HasColumnName("RefreshTokenID");
-
-            entity.Property(e => e.Email)
-                .HasMaxLength(100)
-                .IsUnicode(false);
-            entity.Property(e => e.ExpirationDate).HasColumnType("datetime");
-            entity.Property(e => e.RefreshTokenValue)
-                .HasMaxLength(500)
-                .IsUnicode(false);
-
-            entity.HasOne(d => d.EmailNavigation).WithMany(p => p.RefreshToken)
-                .HasForeignKey(d => d.Email)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_RefreshToken_Usuarios");
-        });
+        //    entity.HasOne(d => d.EmailNavigation).WithMany(p => p.RefreshToken)
+        //        .HasForeignKey(d => d.Email)
+        //        .OnDelete(DeleteBehavior.ClientSetNull)
+        //        .HasConstraintName("FK_RefreshToken_Usuarios");
+        //});
 
         modelBuilder.Entity<TelefonoUsuario>(entity =>
         {
@@ -115,14 +111,9 @@ public partial class CarnetDigitalDbContext : DbContext
 
         modelBuilder.Entity<TipoIdentificacion>(entity =>
         {
-            entity.HasKey(e => e.TipoIdentificacionId).HasName("PK__TiposIde__C774CA54DDC07D3B");
+            entity.HasKey(e => e.TipoIdentificacionID).HasName("PK__TiposIde__C774CA54DDC07D3B");
 
-
-            entity.Property(e => e.TipoIdentificacionId)
-                .ValueGeneratedOnAdd()
-                .HasColumnName("TipoIdentificacionID");
-
-
+            entity.Property(e => e.TipoIdentificacionID).ValueGeneratedOnAdd();
             entity.Property(e => e.Nombre)
                 .HasMaxLength(50)
                 .IsUnicode(false);
@@ -144,18 +135,13 @@ public partial class CarnetDigitalDbContext : DbContext
         {
             entity.HasKey(e => e.Email).HasName("PK__Usuarios__A9D105356EEA241C");
 
-
-
-            entity.HasIndex(e => e.Identificacion, "IX_Usuarios").IsUnique();
-
             entity.Property(e => e.Email)
                 .HasMaxLength(100)
                 .IsUnicode(false);
             entity.Property(e => e.Contrasena)
                 .HasMaxLength(1000)
                 .IsUnicode(false);
-
-            entity.Property(e => e.Fotografia).IsUnicode(false);
+            entity.Property(e => e.Fiotografia).IsUnicode(false);
             entity.Property(e => e.Identificacion)
                 .HasMaxLength(50)
                 .IsUnicode(false);
@@ -165,10 +151,10 @@ public partial class CarnetDigitalDbContext : DbContext
             entity.Property(e => e.TipoIdentificacionId).HasColumnName("TipoIdentificacionID");
             entity.Property(e => e.TipoUsuarioId).HasColumnName("TipoUsuarioID");
 
-            entity.HasOne(d => d.EstadoNavigation).WithMany(p => p.Usuario)
-                .HasForeignKey(d => d.Estado)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_Usuarios_Estados");
+            //entity.HasOne(d => d.EstadoNavigation).WithMany(p => p.Usuario)
+            //    .HasForeignKey(d => d.Estado)
+            //    .OnDelete(DeleteBehavior.ClientSetNull)
+            //    .HasConstraintName("FK_Usuarios_Estados");
 
             entity.HasOne(d => d.TipoIdentificacion).WithMany(p => p.Usuario)
                 .HasForeignKey(d => d.TipoIdentificacionId)

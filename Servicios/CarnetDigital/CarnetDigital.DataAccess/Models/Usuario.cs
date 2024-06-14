@@ -19,7 +19,7 @@ public partial class Usuario
 
     public byte TipoUsuarioId { get; set; }
 
-    public string? Fiotografia { get; set; }
+    public string? Fotografia { get; set; }
 
     public virtual Estados EstadoNavigation { get; set; } = null!;
 

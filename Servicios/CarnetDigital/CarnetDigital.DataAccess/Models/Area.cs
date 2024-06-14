@@ -9,5 +9,8 @@ public partial class Area
 
     public string Nombre { get; set; } = null!;
 
+
     public virtual ICollection<Usuario> Email { get; set; } = new List<Usuario>();
+
+
 }

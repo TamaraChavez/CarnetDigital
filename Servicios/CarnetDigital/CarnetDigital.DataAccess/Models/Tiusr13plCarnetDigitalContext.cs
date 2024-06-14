@@ -4,43 +4,46 @@ using Microsoft.EntityFrameworkCore;
 
 namespace CarnetDigital.DataAccess.Models;
 
-public partial class CarnetDigitalDbContext : DbContext
+public partial class Tiusr13plCarnetDigitalContext : DbContext
 {
-    public CarnetDigitalDbContext()
+    public Tiusr13plCarnetDigitalContext()
     {
     }
 
-    public CarnetDigitalDbContext(DbContextOptions<CarnetDigitalDbContext> options)
+    public Tiusr13plCarnetDigitalContext(DbContextOptions<Tiusr13plCarnetDigitalContext> options)
         : base(options)
     {
     }
 
-    public virtual DbSet<Area> Area { get; set; }
+    public virtual DbSet<Area> Areas { get; set; }
 
-    public virtual DbSet<Carrera> Carrera { get; set; }
+    public virtual DbSet<Carrera> Carreras { get; set; }
 
-    public virtual DbSet<Estados> Estados { get; set; }
+    public virtual DbSet<Estado> Estados { get; set; }
 
-    public virtual DbSet<RefreshToken> RefreshToken { get; set; }
+    public virtual DbSet<RefreshToken> RefreshTokens { get; set; }
 
-    public virtual DbSet<TelefonoUsuario> TelefonoUsuario { get; set; }
+    public virtual DbSet<TelefonoUsuario> TelefonoUsuarios { get; set; }
 
-    public virtual DbSet<TipoIdentificacion> TipoIdentificacion { get; set; }
+    public virtual DbSet<TipoIdentificacion> TipoIdentificacions { get; set; }
 
-    public virtual DbSet<TipoUsuario> TipoUsuario { get; set; }
+    public virtual DbSet<TipoUsuario> TipoUsuarios { get; set; }
 
-    public virtual DbSet<Usuario> Usuario { get; set; }
+    public virtual DbSet<Usuario> Usuarios { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-
-        //=> optionsBuilder.UseSqlServer("Name=DefaultConnection");
-        => optionsBuilder.UseSqlServer("Server=DESKTOP-R9E1L2M\\SQLINSTANCE1;Database=CarnetDigitalDB;User Id=sa;Password=*Tami123;Encrypt=False");
+#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
+        => optionsBuilder.UseSqlServer("Server=tiusr13pl.cuc-carrera-ti.ac.cr\\mssqlserver2019;Database=tiusr13pl_CarnetDigital;User=cd_softcode;Password=Y12&7m5dk;Encrypt=False;");
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        modelBuilder.HasDefaultSchema("cd_softcode");
+
         modelBuilder.Entity<Area>(entity =>
         {
             entity.HasKey(e => e.AreaId).HasName("PK__Areas__70B82028D444520C");
+
+            entity.ToTable("Area", "dbo");
 
             entity.Property(e => e.AreaId)
                 .ValueGeneratedOnAdd()
@@ -53,6 +56,8 @@ public partial class CarnetDigitalDbContext : DbContext
         modelBuilder.Entity<Carrera>(entity =>
         {
             entity.HasKey(e => e.CarreraId).HasName("PK__Carreras__3E43B181B4F79E28");
+
+            entity.ToTable("Carrera", "dbo");
 
             entity.Property(e => e.CarreraId)
                 .HasMaxLength(5)
@@ -69,9 +74,9 @@ public partial class CarnetDigitalDbContext : DbContext
                 .IsUnicode(false);
         });
 
-        modelBuilder.Entity<Estados>(entity =>
+        modelBuilder.Entity<Estado>(entity =>
         {
-            entity.HasKey(e => e.EstadoId);
+            entity.ToTable("Estados", "dbo");
 
             entity.Property(e => e.EstadoId).HasColumnName("EstadoID");
             entity.Property(e => e.Descripcion)
@@ -81,10 +86,9 @@ public partial class CarnetDigitalDbContext : DbContext
 
         modelBuilder.Entity<RefreshToken>(entity =>
         {
-
+            entity.ToTable("RefreshToken", "dbo");
 
             entity.Property(e => e.RefreshTokenId).HasColumnName("RefreshTokenID");
-
             entity.Property(e => e.Email)
                 .HasMaxLength(100)
                 .IsUnicode(false);
@@ -93,7 +97,7 @@ public partial class CarnetDigitalDbContext : DbContext
                 .HasMaxLength(500)
                 .IsUnicode(false);
 
-            entity.HasOne(d => d.EmailNavigation).WithMany(p => p.RefreshToken)
+            entity.HasOne(d => d.EmailNavigation).WithMany(p => p.RefreshTokens)
                 .HasForeignKey(d => d.Email)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_RefreshToken_Usuarios");
@@ -103,11 +107,13 @@ public partial class CarnetDigitalDbContext : DbContext
         {
             entity.HasKey(e => new { e.Email, e.Telefono }).HasName("PK_TelefonosUsuario");
 
+            entity.ToTable("TelefonoUsuario", "dbo");
+
             entity.Property(e => e.Email)
                 .HasMaxLength(100)
                 .IsUnicode(false);
 
-            entity.HasOne(d => d.EmailNavigation).WithMany(p => p.TelefonoUsuario)
+            entity.HasOne(d => d.EmailNavigation).WithMany(p => p.TelefonoUsuarios)
                 .HasForeignKey(d => d.Email)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_TelefonosUsuario_Usuarios");
@@ -115,14 +121,11 @@ public partial class CarnetDigitalDbContext : DbContext
 
         modelBuilder.Entity<TipoIdentificacion>(entity =>
         {
-            entity.HasKey(e => e.TipoIdentificacionId).HasName("PK__TiposIde__C774CA54DDC07D3B");
+            entity.HasKey(e => e.Email).HasName("PK__TiposIde__C774CA54DDC07D3B");
 
+            entity.ToTable("TipoIdentificacion", "dbo");
 
-            entity.Property(e => e.TipoIdentificacionId)
-                .ValueGeneratedOnAdd()
-                .HasColumnName("TipoIdentificacionID");
-
-
+            entity.Property(e => e.Email).ValueGeneratedOnAdd();
             entity.Property(e => e.Nombre)
                 .HasMaxLength(50)
                 .IsUnicode(false);
@@ -131,6 +134,8 @@ public partial class CarnetDigitalDbContext : DbContext
         modelBuilder.Entity<TipoUsuario>(entity =>
         {
             entity.HasKey(e => e.TipoUsuarioId).HasName("PK__TiposUsu__7F22C7028463AF5F");
+
+            entity.ToTable("TipoUsuario", "dbo");
 
             entity.Property(e => e.TipoUsuarioId)
                 .ValueGeneratedOnAdd()
@@ -144,7 +149,7 @@ public partial class CarnetDigitalDbContext : DbContext
         {
             entity.HasKey(e => e.Email).HasName("PK__Usuarios__A9D105356EEA241C");
 
-
+            entity.ToTable("Usuario", "dbo");
 
             entity.HasIndex(e => e.Identificacion, "IX_Usuarios").IsUnique();
 
@@ -154,8 +159,7 @@ public partial class CarnetDigitalDbContext : DbContext
             entity.Property(e => e.Contrasena)
                 .HasMaxLength(1000)
                 .IsUnicode(false);
-
-            entity.Property(e => e.Fotografia).IsUnicode(false);
+            entity.Property(e => e.Fiotografia).IsUnicode(false);
             entity.Property(e => e.Identificacion)
                 .HasMaxLength(50)
                 .IsUnicode(false);
@@ -165,22 +169,22 @@ public partial class CarnetDigitalDbContext : DbContext
             entity.Property(e => e.TipoIdentificacionId).HasColumnName("TipoIdentificacionID");
             entity.Property(e => e.TipoUsuarioId).HasColumnName("TipoUsuarioID");
 
-            entity.HasOne(d => d.EstadoNavigation).WithMany(p => p.Usuario)
+            entity.HasOne(d => d.EstadoNavigation).WithMany(p => p.Usuarios)
                 .HasForeignKey(d => d.Estado)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_Usuarios_Estados");
 
-            entity.HasOne(d => d.TipoIdentificacion).WithMany(p => p.Usuario)
+            entity.HasOne(d => d.TipoIdentificacion).WithMany(p => p.Usuarios)
                 .HasForeignKey(d => d.TipoIdentificacionId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK__Usuarios__TipoUs__3B75D760");
 
-            entity.HasOne(d => d.TipoUsuario).WithMany(p => p.Usuario)
+            entity.HasOne(d => d.TipoUsuario).WithMany(p => p.Usuarios)
                 .HasForeignKey(d => d.TipoUsuarioId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK__Usuarios__TipoUs__3C69FB99");
 
-            entity.HasMany(d => d.Area).WithMany(p => p.Email)
+            entity.HasMany(d => d.Areas).WithMany(p => p.Emails)
                 .UsingEntity<Dictionary<string, object>>(
                     "UsuarioArea",
                     r => r.HasOne<Area>().WithMany()
@@ -194,13 +198,14 @@ public partial class CarnetDigitalDbContext : DbContext
                     j =>
                     {
                         j.HasKey("Email", "AreaId").HasName("PK__UsuarioA__41F2B3E643365044");
+                        j.ToTable("UsuarioArea", "dbo");
                         j.IndexerProperty<string>("Email")
                             .HasMaxLength(100)
                             .IsUnicode(false);
                         j.IndexerProperty<byte>("AreaId").HasColumnName("AreaID");
                     });
 
-            entity.HasMany(d => d.Carrera).WithMany(p => p.EmailNavigation)
+            entity.HasMany(d => d.Carreras).WithMany(p => p.Emails)
                 .UsingEntity<Dictionary<string, object>>(
                     "UsuarioCarrera",
                     r => r.HasOne<Carrera>().WithMany()
@@ -214,6 +219,7 @@ public partial class CarnetDigitalDbContext : DbContext
                     j =>
                     {
                         j.HasKey("Email", "CarreraId").HasName("PK__UsuarioC__D0FCCBBA9595A5F8");
+                        j.ToTable("UsuarioCarrera", "dbo");
                         j.IndexerProperty<string>("Email")
                             .HasMaxLength(100)
                             .IsUnicode(false);

@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace CarnetDigital.Models
+
 {
     public class BusinessLogicResponse
     {
@@ -29,3 +30,4 @@ namespace CarnetDigital.Models
 
     }
 }
+

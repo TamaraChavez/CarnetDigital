@@ -5,11 +5,13 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace CarnetDigital.Models
+
 {
     public class BusinessLogicResponse
     {
         public int StatusCode { get; set; } = 200;
         public string Message { get; set; } = null!;
+
         public object ResponseObject { get; set; } = null!;
 
 
@@ -27,4 +29,5 @@ namespace CarnetDigital.Models
 
     }
 }
+
 
